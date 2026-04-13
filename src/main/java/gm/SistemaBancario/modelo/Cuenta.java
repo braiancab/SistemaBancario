@@ -2,6 +2,7 @@ package gm.SistemaBancario.modelo;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "cuentas")
@@ -22,13 +23,16 @@ public class Cuenta {
     // Relación con cliente
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
+    @JsonIgnore
     private Cliente cliente;
 
     // Relación con transferencias
     @OneToMany(mappedBy = "cuentaOrigen")
+    @JsonIgnore
     private List<Transferencia> transferenciasEnviadas;
 
     @OneToMany(mappedBy = "cuentaDestino")
+    @JsonIgnore
     private List<Transferencia> transferenciasRecibidas;
 
     // --- Constructores ---
