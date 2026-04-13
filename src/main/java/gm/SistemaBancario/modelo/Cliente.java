@@ -1,5 +1,6 @@
 package gm.SistemaBancario.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -27,7 +28,10 @@ public class Cliente {
     private String contrasena;
 
     // Relación: un cliente tiene muchas cuentas
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+  //  @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    @JsonIgnore // 👈 ACÁ VA
     private List<Cuenta> cuentas;
 
     // --- Constructores ---

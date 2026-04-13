@@ -10,8 +10,8 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clientes")
-@CrossOrigin(origins = "*") // permite conexión con React
+@RequestMapping("/api/clientes") //http://localhost:8080/api/clientes
+@CrossOrigin(origins = "*") //
 public class ClienteControlador {
 
     private final ClienteServicio clienteServicio;
