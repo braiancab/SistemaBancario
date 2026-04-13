@@ -5,6 +5,8 @@ import gm.SistemaBancario.servicio.ClienteServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,13 +21,14 @@ public class ClienteControlador {
         this.clienteServicio = clienteServicio;
     }
 
-    // ✅ LISTAR TODOS
+    //LISTAR TODOS
     @GetMapping
     public ResponseEntity<List<Cliente>> listarClientes() {
         return ResponseEntity.ok(clienteServicio.listarClientes());
     }
 
-    // ✅ BUSCAR POR ID
+    //BUSCAR POR ID
+
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> buscarClientePorId(@PathVariable Long id) {
         Cliente cliente = clienteServicio.buscarClientePorId(id);
@@ -35,34 +38,42 @@ public class ClienteControlador {
         return ResponseEntity.ok(cliente);
     }
 
-    // ✅ CREAR CLIENTE
+    //CREAR CLIENTE
     @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente) {
-        return clienteServicio.guardarCliente(cliente);
+    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
+        //Ignoramos un cliente con id para evitar conflictos
+        cliente.setIdCliente(null);
+        Cliente creado = clienteServicio.guardarCliente(cliente);
+        URI location = URI.create("/api/clientes/"+creado.getIdCliente());
+        return ResponseEntity.created(location).body(creado);
     }
 
-    // ✅ ACTUALIZAR CLIENTE
+    //ACTUALIZAR CLIENTE
+    //PUT api/clientes/{id} ->actualizar
     @PutMapping("/{id}")
-    public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
 
         Cliente clienteExistente = clienteServicio.buscarClientePorId(id);
 
         if (clienteExistente == null) {
-            throw new RuntimeException("Cliente no encontrado");
+            return ResponseEntity.notFound().build();
         }
+        //Forzar el id del path para la actualizacion
 
-        clienteExistente.setNombre(cliente.getNombre());
-        clienteExistente.setApellido(cliente.getApellido());
-        clienteExistente.setDni(cliente.getDni());
-        clienteExistente.setEmail(cliente.getEmail());
-        clienteExistente.setContrasena(cliente.getContrasena());
-
-        return clienteServicio.guardarCliente(clienteExistente);
+        cliente.setIdCliente(id);
+        Cliente actualizado = clienteServicio.guardarCliente(cliente);
+        return ResponseEntity.ok(actualizado);
     }
 
-    // ✅ ELIMINAR CLIENTE
+    //ELIMINAR CLIENTE
+    //DELETE api/clientes/{id} ->eliminar
     @DeleteMapping("/{id}")
-    public void eliminarCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarCliente(@PathVariable Long id) {
+        Cliente existente = clienteServicio.buscarClientePorId(id);
+        if (existente==null){
+            return ResponseEntity.notFound().build();
+        }
         clienteServicio.eliminarCliente(id);
+        return ResponseEntity.noContent().build();
     }
 }
