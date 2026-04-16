@@ -24,7 +24,7 @@ public class Cliente {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 255, nullable = false)
     private String contrasena;
 
     // Relación: un cliente tiene muchas cuentas

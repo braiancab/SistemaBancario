@@ -3,6 +3,7 @@ package gm.SistemaBancario.modelo;
 import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cuentas")
@@ -12,10 +13,16 @@ public class Cuenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCuenta;
 
-    @Column(unique = true, nullable = false)
-    private String numeroCuenta;
+    // CVU de 22
+    @Column(unique = true, nullable = false, length = 22)
+    private String cvu;
 
-    private Float saldo;
+    // Alias
+    @Column(unique = true, nullable = false)
+    private String alias;
+
+    @Column(precision = 15, scale = 2)
+    private BigDecimal saldo;
 
     @Column(length = 30)
     private String tipoCuenta;
@@ -38,9 +45,10 @@ public class Cuenta {
     // --- Constructores ---
     public Cuenta() {}
 
-    public Cuenta(Long idCuenta, String numeroCuenta, Float saldo, String tipoCuenta, Cliente cliente) {
+    public Cuenta(Long idCuenta, String cvu, String alias,BigDecimal saldo, String tipoCuenta, Cliente cliente) {
         this.idCuenta = idCuenta;
-        this.numeroCuenta = numeroCuenta;
+        this.cvu = cvu;
+        this.alias=alias;
         this.saldo = saldo;
         this.tipoCuenta = tipoCuenta;
         this.cliente = cliente;
@@ -50,11 +58,14 @@ public class Cuenta {
     public Long getIdCuenta() { return idCuenta; }
     public void setIdCuenta(Long idCuenta) { this.idCuenta = idCuenta; }
 
-    public String getNumeroCuenta() { return numeroCuenta; }
-    public void setNumeroCuenta(String numeroCuenta) { this.numeroCuenta = numeroCuenta; }
+    public String getCvu() { return cvu; }
+    public void setCvu(String cvu) { this.cvu = cvu; }
 
-    public Float getSaldo() { return saldo; }
-    public void setSaldo(Float saldo) { this.saldo = saldo; }
+    public String getAlias() { return alias; }
+    public void setAlias(String alias) { this.alias = alias; }
+
+    public BigDecimal getSaldo() { return saldo; }
+    public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
 
     public String getTipoCuenta() { return tipoCuenta; }
     public void setTipoCuenta(String tipoCuenta) { this.tipoCuenta = tipoCuenta; }
@@ -77,7 +88,8 @@ public class Cuenta {
     public String toString() {
         return "Cuenta{" +
                 "idCuenta=" + idCuenta +
-                ", numeroCuenta='" + numeroCuenta + '\'' +
+                ", cvu='" + cvu + '\'' +
+                ", alias='" + alias + '\'' +
                 ", saldo=" + saldo +
                 ", tipoCuenta='" + tipoCuenta + '\'' +
                 '}';

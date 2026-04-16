@@ -6,6 +6,7 @@ import gm.SistemaBancario.repositorio.CuentaRepositorio;
 import gm.SistemaBancario.repositorio.TransferenciaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -41,13 +42,28 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
                 .orElseThrow(() -> new RuntimeException("Cuenta destino no encontrada"));
 
         // 3. Validar saldo
-        if (origen.getSaldo() < monto) {
-            throw new RuntimeException("Saldo insuficiente");
+        //if (origen.getSaldo() < monto) {
+          //  throw new RuntimeException("Saldo insuficiente");
+        //}
+
+        // 1. Convertir el monto de float a BigDecimal de forma segura
+        BigDecimal montoBI = BigDecimal.valueOf(monto);
+
+        // 2. Comparar saldos: origen.getSaldo() < monto
+        // compareTo devuelve: -1 (menor), 0 (igual), 1 (mayor)
+        if (origen.getSaldo().compareTo(montoBI)<0) {
+         throw new RuntimeException("Saldo insuficiente");
         }
 
+
         // 4. Actualizar saldos
-        origen.setSaldo(origen.getSaldo() - monto);
-        destino.setSaldo(destino.getSaldo() + monto);
+      //  origen.setSaldo(origen.getSaldo() - monto);
+       // destino.setSaldo(destino.getSaldo() + monto);
+
+
+        // 3. Actualizar saldos usando .subtract() y .add()
+        origen.setSaldo(origen.getSaldo().subtract(montoBI));
+        destino.setSaldo(destino.getSaldo().add(montoBI));
 
         cuentaRepositorio.save(origen);
         cuentaRepositorio.save(destino);
