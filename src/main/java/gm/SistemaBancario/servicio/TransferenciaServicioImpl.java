@@ -35,10 +35,10 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         }
 
         // 2. Buscar cuentas
-        Cuenta origen = cuentaRepositorio.findByNumeroCuenta(cuentaOrigenNum)
+        Cuenta origen = cuentaRepositorio.findByAlias(cuentaOrigenNum)
                 .orElseThrow(() -> new RuntimeException("Cuenta origen no encontrada"));
 
-        Cuenta destino = cuentaRepositorio.findByNumeroCuenta(cuentaDestinoNum)
+        Cuenta destino = cuentaRepositorio.findByAlias(cuentaDestinoNum)
                 .orElseThrow(() -> new RuntimeException("Cuenta destino no encontrada"));
 
         // 3. Validar saldo

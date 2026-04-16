@@ -10,10 +10,12 @@ import org.springframework.stereotype.Repository;
 public interface CuentaRepositorio extends JpaRepository<Cuenta, Long> {
 
     // Buscar por número de cuenta (único)
-    Optional<Cuenta> findByNumeroCuenta(String numeroCuenta);
+   Optional<Cuenta> findByAlias(String alias);
 
     // Verificar existencia
-    boolean existsByNumeroCuenta(String numeroCuenta);
+   // boolean existsByNumeroCuenta(String numeroCuenta);
+
+    boolean existsByCvu(String cvu);
 
     // Obtener cuentas de un cliente
     List<Cuenta> findByClienteIdCliente(Long idCliente);
