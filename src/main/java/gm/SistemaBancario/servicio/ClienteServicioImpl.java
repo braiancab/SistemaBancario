@@ -31,15 +31,17 @@ public class ClienteServicioImpl implements ClienteServicio {
     }
 
     @Override
+    public Cliente buscarPorDni(String dni){
+        return clienteRepositorio.findByDni(dni).orElse(null);
+    }
+    @Override
+    public Cliente buscarPorEmail(String email){
+        return clienteRepositorio.findByEmail(email).orElse(null);
+    }
+
+
+    @Override
     public Cliente guardarCliente(Cliente cliente) {
-
-        if (clienteRepositorio.existsByDni(cliente.getDni())) {
-            throw new RuntimeException("El DNI ya existe");
-        }
-
-        if (clienteRepositorio.existsByEmail(cliente.getEmail())) {
-            throw new RuntimeException("El email ya existe");
-        }
 
         return clienteRepositorio.save(cliente);
     }

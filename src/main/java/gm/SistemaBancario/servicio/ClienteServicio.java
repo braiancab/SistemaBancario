@@ -9,6 +9,10 @@ public interface ClienteServicio {
 
     Cliente buscarClientePorId(Long id);
 
+    Cliente buscarPorDni(String dni);
+
+    Cliente buscarPorEmail(String email);
+
     Cliente guardarCliente(Cliente cliente);
 
     void eliminarCliente(Long id);

@@ -51,19 +51,44 @@ public class ClienteControlador {
     //ACTUALIZAR CLIENTE
     //PUT api/clientes/{id} ->actualizar
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<?> actualizarCliente(@PathVariable Long id,
+                                               @RequestBody Cliente clienteActualizado) {
 
         Cliente clienteExistente = clienteServicio.buscarClientePorId(id);
 
         if (clienteExistente == null) {
             return ResponseEntity.notFound().build();
         }
-        //Forzar el id del path para la actualizacion
 
-        cliente.setIdCliente(id);
-        Cliente actualizado = clienteServicio.guardarCliente(cliente);
-        return ResponseEntity.ok(actualizado);
+        // Validar DNI
+        Cliente clienteDni = clienteServicio.buscarPorDni(clienteActualizado.getDni());
+
+        if (clienteDni != null && !clienteDni.getIdCliente().equals(id)) {
+            return ResponseEntity.badRequest()
+                    .body("El DNI ya pertenece a otro cliente");
+        }
+
+        // Validar EMAIL
+        Cliente clienteEmail = clienteServicio.buscarPorEmail(clienteActualizado.getEmail());
+
+        if (clienteEmail != null && !clienteEmail.getIdCliente().equals(id)) {
+            return ResponseEntity.badRequest()
+                    .body("El email ya pertenece a otro cliente");
+        }
+
+        // Actualizar datos
+        clienteExistente.setNombre(clienteActualizado.getNombre());
+        clienteExistente.setApellido(clienteActualizado.getApellido());
+        clienteExistente.setDni(clienteActualizado.getDni());
+        clienteExistente.setEmail(clienteActualizado.getEmail());
+        clienteExistente.setContrasena(clienteActualizado.getContrasena());
+
+        Cliente guardado = clienteServicio.guardarCliente(clienteExistente);
+
+        return ResponseEntity.ok(guardado);
     }
+
+
 
     //ELIMINAR CLIENTE
     //DELETE api/clientes/{id} ->eliminar
