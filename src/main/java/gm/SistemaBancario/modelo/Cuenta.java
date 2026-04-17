@@ -33,6 +33,10 @@ public class Cuenta {
     @JsonIgnore
     private Cliente cliente;
 
+    //Relacion tipo cuenta
+
+
+
     // Relación con transferencias
     @OneToMany(mappedBy = "cuentaOrigen")
     @JsonIgnore
