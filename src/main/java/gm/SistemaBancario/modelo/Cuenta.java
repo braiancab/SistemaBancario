@@ -24,8 +24,6 @@ public class Cuenta {
     @Column(precision = 15, scale = 2)
     private BigDecimal saldo;
 
-    @Column(length = 30)
-    private String tipoCuenta;
 
     // Relación con cliente
     @ManyToOne
@@ -34,7 +32,16 @@ public class Cuenta {
     private Cliente cliente;
 
     //Relacion tipo cuenta
+    @ManyToOne(fetch = FetchType.EAGER) // Muchas cuentas -> Un tipo
+    @JoinColumn(name = "tipo_cuenta", referencedColumnName = "idTipo", nullable = false)
+    @JsonIgnore
+    private TipoCuenta tipoCuenta;
 
+    //Relacion con estado cuenta
+    @ManyToOne(fetch = FetchType.EAGER) // Muchas cuentas -> Un estado
+    @JoinColumn(name="estado_cuenta", referencedColumnName = "idEstado", nullable = false)
+    @JsonIgnore
+    private EstadoCuenta estadoCuenta;
 
 
     // Relación con transferencias
@@ -49,12 +56,13 @@ public class Cuenta {
     // --- Constructores ---
     public Cuenta() {}
 
-    public Cuenta(Long idCuenta, String cvu, String alias,BigDecimal saldo, String tipoCuenta, Cliente cliente) {
+    public Cuenta(Long idCuenta, String cvu, String alias,BigDecimal saldo, TipoCuenta tipoCuenta,EstadoCuenta estadoCuenta, Cliente cliente) {
         this.idCuenta = idCuenta;
         this.cvu = cvu;
         this.alias=alias;
         this.saldo = saldo;
         this.tipoCuenta = tipoCuenta;
+        this.estadoCuenta = estadoCuenta;
         this.cliente = cliente;
     }
 
@@ -71,8 +79,12 @@ public class Cuenta {
     public BigDecimal getSaldo() { return saldo; }
     public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
 
-    public String getTipoCuenta() { return tipoCuenta; }
-    public void setTipoCuenta(String tipoCuenta) { this.tipoCuenta = tipoCuenta; }
+    public TipoCuenta getTipoCuenta() { return tipoCuenta; }
+    public void setTipoCuenta(TipoCuenta tipoCuenta) { this.tipoCuenta = tipoCuenta; }
+
+    public EstadoCuenta getEstadoCuenta() { return estadoCuenta; }
+    public void setEstadoCuenta(EstadoCuenta estadoCuenta) { this.estadoCuenta = estadoCuenta; }
+
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
