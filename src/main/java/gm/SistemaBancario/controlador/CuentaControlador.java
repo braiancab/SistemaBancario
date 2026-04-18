@@ -20,8 +20,9 @@ public class CuentaControlador {
     // ✅ Crear cuenta
     @PostMapping
     public Cuenta crearCuenta(@RequestParam Long idCliente,
-                              @RequestParam String tipoCuenta) {
-        return cuentaServicio.crearCuenta(idCliente, tipoCuenta);
+                              @RequestParam Long idTipo,
+                              @RequestParam Long idEstado) {
+        return cuentaServicio.crearCuenta(idCliente, idTipo, idEstado);
     }
 
     // ✅ Obtener cuentas de un cliente
