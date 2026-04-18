@@ -1,8 +1,9 @@
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 export default function Login() {
     return (
         <>
-            <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+            <Container className="d-flex justify-content-center align-items-center pb-5" style={{ minHeight: '100vh' }}>
                 <Row>
                     <Col>
                         <Card className="shadow" style={{ width: '25rem' }}>
@@ -12,7 +13,7 @@ export default function Login() {
                                 <Form>
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control type="email" placeholder="ejemplo@correo.com" />
+                                        <Form.Control type="email" placeholder="ejemplocorreo@gmail.com" />
                                     </Form.Group>
 
                                     <Form.Group className="mb-4" controlId="formBasicPassword">
@@ -20,10 +21,17 @@ export default function Login() {
                                         <Form.Control type="password" placeholder="********" />
                                     </Form.Group>
 
-                                    <div className="d-grid">
+                                    <div className="d-grid mt-3">
                                         <Button variant="primary" type="submit">
                                             Ingresar
                                         </Button>
+                                    </div>
+
+                                    <div className="text-center mt-3">
+                                        <span>¿No tenés una cuenta? </span>
+                                        <Link to="/registro" className="text-decoration-none" style={{ fontWeight: '500' }}>
+                                            Registrate acá
+                                        </Link>
                                     </div>
                                 </Form>
                             </Card.Body>
