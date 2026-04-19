@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
+  const navigate = useNavigate();
+
  // Guardamos lo que el usuario escribe
   const [credenciales, setCredenciales] = useState({
     email: '',
-    password: ''
+    contrasena: ''
   });
 
  //Función que se ejecuta cada vez que el usuario toca una tecla
@@ -17,9 +20,24 @@ function Login() {
   };
 
  //Función que se ejecuta al apretar el botón "Ingresar"
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault(); // Evitamos que la página se recargue en blanco
-    console.log("Intentando iniciar sesión con:", credenciales);
+    try {
+      const respuesta = await axios.post('http://localhost:8080/auth/login', credenciales);
+
+      //  Guardamos el token o los datos que nos manda Java en la memoria del navegador
+      localStorage.setItem('token', respuesta.data.token); 
+
+      // Le avisamos al cliente
+      alert("¡Inicio de sesión exitoso!");
+
+      // Lo mandamos a la pantalla del banco
+      navigate('/panel'); 
+
+    } catch (error) {
+      console.error("Hubo un error al iniciar sesión:", error);
+      alert("Error al iniciar sesión. Revisá tus credenciales.");
+    }
   };
 
   return (
@@ -57,9 +75,9 @@ function Login() {
                     type="password" 
                     className="form-control" 
                     id="inputPassword"
-                    name="password"
+                    name="contrasena"
                     placeholder="********" 
-                    value={credenciales.password}
+                    value={credenciales.contrasena}
                     onChange={handleChange}
                   />
                 </div>
