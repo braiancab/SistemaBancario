@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 function Login() {
   const navigate = useNavigate();
 
  // Guardamos lo que el usuario escribe
   const [credenciales, setCredenciales] = useState({
     email: '',
-    password: ''
+    contrasena: ''
   });
 
  //Función que se ejecuta cada vez que el usuario toca una tecla
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     setCredenciales({
       ...credenciales,
       [e.target.name]: e.target.value
@@ -73,9 +75,9 @@ function Login() {
                     type="password" 
                     className="form-control" 
                     id="inputPassword"
-                    name="password"
+                    name="contrasena"
                     placeholder="********" 
-                    value={credenciales.password}
+                    value={credenciales.contrasena}
                     onChange={handleChange}
                   />
                 </div>
