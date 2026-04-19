@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Login from './usuarios/Login';
 import Registro from './usuarios/Registro';
+import Dashboard from './panel/Dashboard';
+
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         
         {/* Ruta secundaria: cuando va a /registro, ve el formulario nuevo */}
         <Route path="/registro" element={<Registro />} />
+
+        <Route path="/panel" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
