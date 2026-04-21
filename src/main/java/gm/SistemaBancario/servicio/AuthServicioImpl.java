@@ -52,6 +52,11 @@ public class AuthServicioImpl implements AuthServicio {
 
         String token = JwtUtil.generarToken(cliente.getEmail());
 
-        return new LoginResponse(token, "Login exitoso");
+
+        return new LoginResponse(
+                token,
+                "Login exitoso",
+                cliente.getIdCliente()
+        );
     }
 }

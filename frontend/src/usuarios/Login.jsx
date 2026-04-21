@@ -5,6 +5,7 @@ import axios from 'axios';
 function Login() {
   const navigate = useNavigate();
 
+  
  // Guardamos lo que el usuario escribe
   const [credenciales, setCredenciales] = useState({
     email: '',
@@ -19,15 +20,19 @@ function Login() {
     });
   };
 
+
+
  //Función que se ejecuta al apretar el botón "Ingresar"
   const handleSubmit = async(e) => {
     e.preventDefault(); // Evitamos que la página se recargue en blanco
     try {
       const respuesta = await axios.post('http://localhost:8080/auth/login', credenciales);
 
+      
       //  Guardamos el token o los datos que nos manda Java en la memoria del navegador
       localStorage.setItem('token', respuesta.data.token); 
-
+      //  Guardamos id del cliente
+      localStorage.setItem("idCliente", respuesta.data.idCliente);
       // Le avisamos al cliente
       alert("¡Inicio de sesión exitoso!");
 
@@ -39,6 +44,8 @@ function Login() {
       alert("Error al iniciar sesión. Revisá tus credenciales.");
     }
   };
+
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center pb-5" style={{ minHeight: '100vh' }}>

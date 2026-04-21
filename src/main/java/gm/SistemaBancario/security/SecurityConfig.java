@@ -7,25 +7,42 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 @Configuration
 public class SecurityConfig {
+
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filtro(HttpSecurity http) throws Exception {
 
         http
-                // 1. ABRIMOS LA PUERTA AL PUERTO DE REACT (CORS)
                 .cors(Customizer.withDefaults())
-
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        // 2. DEJAMOS PASAR AL LOGIN Y AL REGISTRO SIN PEDIR CONTRASEÑA
-                        .requestMatchers("/auth/**").permitAll()
 
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/clientes").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/clientes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/cuentas/**").permitAll()
+
                         .anyRequest().authenticated()
-                ).httpBasic(Customizer.withDefaults());
+                )
+
+                .addFilterBefore(jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

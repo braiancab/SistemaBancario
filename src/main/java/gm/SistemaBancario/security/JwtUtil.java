@@ -2,6 +2,8 @@ package gm.SistemaBancario.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
@@ -17,5 +19,24 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(KEY)
                 .compact();
+    }
+
+    //Metodo para generar clave
+    private static SecretKey clave() {
+        return Keys.hmacShaKeyFor(SECRET.getBytes());
+    }
+
+    public static boolean validarToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(clave())
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
