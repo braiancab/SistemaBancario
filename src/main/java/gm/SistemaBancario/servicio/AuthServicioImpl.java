@@ -20,7 +20,11 @@ public class AuthServicioImpl implements AuthServicio {
     public String registrar(RegisterRequest request) {
 
         if(clienteRepositorio.findByEmail(request.getEmail()).isPresent()) {
-            return "Email ya registrado";
+            return "El correo ya existe";
+        }
+
+        if(clienteRepositorio.findByDni(request.getDniCliente()).isPresent()) {
+            return "El dni ya se encuentra registrado";
         }
 
         Cliente cliente = new Cliente();

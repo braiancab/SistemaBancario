@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 function Registro() {
 
   const navigate = useNavigate();
-
   // Guardamos lo que el usuario escribe
   const [datos, setDatos] = useState({
     nombre: '',
@@ -14,6 +13,10 @@ function Registro() {
     contrasena: '',
     confirmarContrasena: ''
   });
+  //Constante de mensaje de error para el gmail
+  const [mensaje, setMensaje] = useState("");
+  const [tipoMensaje, setTipoMensaje] = useState("");
+
 
   //Función que se ejecuta cada vez que el usuario toca una tecla
   const handleChange = (e) => {
@@ -27,8 +30,17 @@ function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evita que la página se recargue en blanco
 
+    setMensaje("");
+       // Validación básica correo
+    if (!datos.email.includes("@")) {
+      setMensaje("Ingrese un correo válido");
+      setTipoMensaje("danger");
+      return;
+    }
+
+
     //validación de contraseñas
-   if (datos.contrasena !== datos.confirmPassword) {
+   if (datos.contrasena !== datos.confirmarContrasena) {
       alert("¡Cuidado! Las contraseñas no coinciden.");
       return; // Corta la ejecución acá y no envía nada al servidor
     }
@@ -37,13 +49,21 @@ function Registro() {
       // Petición al backend
       // Le mandamos el objeto 'datos' (Axios ignora 'confirmarContrasena' si Java no lo pide)
       const respuesta = await axios.post('http://localhost:8080/auth/register', datos);
-
+      const texto = await respuesta.data;
+        if (texto === "El correo ya existe") {
+        setMensaje("El correo ya está registrado en el sistema");
+        setTipoMensaje("danger");
+      } else  if (texto === "El dni ya se encuentra registrado") {
+    setMensaje("El DNI ya está registrado.");
+    setTipoMensaje("danger"); }
+        
+       else {
       console.log("Servidor responde:", respuesta.data);
       alert("¡Cuenta creada con éxito! Ya podés iniciar sesión.");
       
       // 4. Redirigimos al Login para que entre con su nueva cuenta
       navigate('/');
-
+      }
     } catch (error) {
       console.error("Error al registrar:", error);
       alert("Hubo un error al crear la cuenta. Verifica si ese correo ya existe.");
@@ -60,6 +80,12 @@ function Registro() {
               <h6 className="card-subtitle mb-4 text-muted text-center">
                 Crear Nueva Cuenta
               </h6>
+              
+            {mensaje && (
+              <div className={`alert alert-${tipoMensaje}`}>
+                {mensaje}
+              </div>
+            )}
               
               <form onSubmit={handleSubmit}>
                 <div className="row mb-3">
@@ -89,8 +115,8 @@ function Registro() {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="confirmPassword" className="form-label">Repetir Contraseña</label>
-                  <input type="password" className="form-control" id="confirmPassword" name="confirmPassword" placeholder="********" value={datos.confirmPassword} onChange={handleChange} required />
+                  <label htmlFor="confirmarContrasena" className="form-label">Repetir Contraseña</label>
+                  <input type="password" className="form-control" id="confirmarContrasena" name="confirmarContrasena" placeholder="********" value={datos.confirmarContrasena} onChange={handleChange} required />
                 </div>
 
                 <div className="d-grid mb-3">
