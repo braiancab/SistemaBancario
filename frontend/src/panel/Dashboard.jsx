@@ -99,7 +99,7 @@ function Dashboard() {
 
                   <div className="col-md-6 mb-3">
                     <strong>DNI:</strong>
-                    <p>{cliente.dniCliente}</p>
+                    <p>{cliente.dni}</p>
                   </div>
 
                   <div className="col-md-6 mb-3">
