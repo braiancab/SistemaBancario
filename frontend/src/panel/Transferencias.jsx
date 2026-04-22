@@ -37,7 +37,7 @@ function Transferencias() {
       Authorization: `Bearer ${token}`,
     };
 
-    // 1. Datos de la cuenta del cliente logueado (Origen)
+    //  Datos de la cuenta del cliente logueado (Origen)
     axios
       .get(`http://localhost:8080/api/cuentas/cliente/${idCliente}`, {
         headers,
@@ -48,7 +48,7 @@ function Transferencias() {
       })
       .catch((error) => console.error("Error cuenta origen:", error));
 
-    // 2. Todas las cuentas del sistema (Destino)
+    // Todas las cuentas del sistema (Destino)
     axios
       .get(`http://localhost:8080/api/cuentas/destino/${idCliente}`, {
         headers,
@@ -58,7 +58,7 @@ function Transferencias() {
         setCuentasDestino(response.data);
       })
       .catch((error) => console.error("Error cuentas destino:", error));
-    // 3. Motivos de transferencia
+    // Motivos de transferencia
     axios
       .get(`http://localhost:8080/api/motivo_transferencia`, { headers })
       .then((response) => setMotivos(response.data))
@@ -214,7 +214,7 @@ function Transferencias() {
                     Transferir
                   </button>
 
-                  {/* 4. BOTÓN VOLVER: Navega al Dashboard */}
+                  {/* BOTÓN VOLVER: Navega al Dashboard */}
                   <button
                     type="button"
                     className="btn btn-secondary"

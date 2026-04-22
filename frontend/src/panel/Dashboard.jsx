@@ -148,12 +148,12 @@ function Dashboard() {
 
                   <div className="col-md-6 mb-3">
                     <strong>Estado:</strong>
-                    <p>{cuenta.estado_cuenta}</p>
+                    <p>{cuenta.estadoCuenta?.estado || "Sin estado"}</p>
                   </div>
 
                   <div className="col-md-6 mb-3">
                     <strong>Tipo Cuenta:</strong>
-                    <p>{cuenta.tipo_cuenta}</p>
+                    <p>{cuenta.tipoCuenta?.tipo || "Sin tipo"}</p>
                   </div>
                 </div>
               </div>
@@ -174,7 +174,7 @@ function Dashboard() {
 
                 <button
                      className="btn btn-success btn-lg"
-                       onClick={() => navigate("/Transferencias")}
+                       onClick={() => navigate("/transferencias")}
                   >
                      Transferir
                 </button>

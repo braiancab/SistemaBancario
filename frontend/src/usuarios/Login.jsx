@@ -37,7 +37,7 @@ function Login() {
       alert("¡Inicio de sesión exitoso!");
 
       // Lo mandamos a la pantalla del banco
-      navigate('/panel'); 
+      navigate('/dashboard'); 
 
     } catch (error) {
       console.error("Hubo un error al iniciar sesión:", error);

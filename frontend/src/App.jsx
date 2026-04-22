@@ -16,7 +16,7 @@ function App() {
         {/* Ruta secundaria: cuando va a /registro, ve el formulario nuevo */}
         <Route path="/registro" element={<Registro />} />
 
-        <Route path="/panel" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/transferencias" element={<Transferencias />} />
       </Routes>
