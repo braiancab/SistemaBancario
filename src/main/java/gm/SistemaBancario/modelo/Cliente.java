@@ -31,7 +31,7 @@ public class Cliente {
   //  @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
-    @JsonIgnore // 👈 ACÁ VA
+    @JsonIgnore // Evita redundancia
     private List<Cuenta> cuentas;
 
     // --- Constructores ---

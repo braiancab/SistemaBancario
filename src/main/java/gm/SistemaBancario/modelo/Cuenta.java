@@ -26,21 +26,21 @@ public class Cuenta {
 
 
     // Relación con cliente
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
     private Cliente cliente;
 
     //Relacion tipo cuenta
     @ManyToOne(fetch = FetchType.EAGER) // Muchas cuentas -> Un tipo
     @JoinColumn(name = "tipo_cuenta", referencedColumnName = "idTipo", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
     private TipoCuenta tipoCuenta;
 
     //Relacion con estado cuenta
     @ManyToOne(fetch = FetchType.EAGER) // Muchas cuentas -> Un estado
     @JoinColumn(name="estado_cuenta", referencedColumnName = "idEstado", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
     private EstadoCuenta estadoCuenta;
 
 

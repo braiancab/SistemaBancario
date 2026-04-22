@@ -126,7 +126,7 @@ function Dashboard() {
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <strong>Número Cuenta:</strong>
-                    <p>{cuenta.numeroCuenta}</p>
+                    <p>{cuenta.idCuenta}</p>
                   </div>
 
                   <div className="col-md-6 mb-3">
@@ -148,12 +148,12 @@ function Dashboard() {
 
                   <div className="col-md-6 mb-3">
                     <strong>Estado:</strong>
-                    <p>{cuenta.estadoCuenta?.descripcion}</p>
+                    <p>{cuenta.estado_cuenta}</p>
                   </div>
 
                   <div className="col-md-6 mb-3">
                     <strong>Tipo Cuenta:</strong>
-                    <p>{cuenta.tipoCuenta?.descripcion}</p>
+                    <p>{cuenta.tipo_cuenta}</p>
                   </div>
                 </div>
               </div>
@@ -170,8 +170,13 @@ function Dashboard() {
               <h5 className="card-title mb-4">Operaciones Rápidas</h5>
 
               <div className="d-flex gap-3 flex-wrap">
-                <button className="btn btn-success btn-lg">
-                  Transferir
+                
+
+                <button
+                     className="btn btn-success btn-lg"
+                       onClick={() => navigate("/Transferencias")}
+                  >
+                     Transferir
                 </button>
 
                 <button className="btn btn-secondary btn-lg">

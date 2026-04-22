@@ -5,9 +5,10 @@ import java.util.List;
 
 public interface TransferenciaServicio {
 
-    Transferencia realizarTransferencia(String cuentaOrigen,
-                                        String cuentaDestino,
-                                        Float monto);
+    Transferencia realizarTransferencia(Long cuentaOrigen,
+                                        Long cuentaDestino,
+                                        Float monto,
+                                        Long motivoId);
 
     List<Transferencia> historialCuenta(Long idCuenta);
 }

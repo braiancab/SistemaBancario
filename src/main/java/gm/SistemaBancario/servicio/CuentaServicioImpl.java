@@ -88,6 +88,13 @@ public class CuentaServicioImpl implements CuentaServicio {
         return cuentaRepositorio.findByClienteIdCliente(idCliente);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Cuenta> obtenerCuentasDestino(Long idCliente) {
+        return cuentaRepositorio.findCuentasDestino(idCliente);
+    }
+
+
     // ✅ Buscar cuenta
     @Override
     @Transactional(readOnly = true)

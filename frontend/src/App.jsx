@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './usuarios/Login';
 import Registro from './usuarios/Registro';
 import Dashboard from './panel/Dashboard';
+import Transferencias from "./panel/Transferencias";
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
         <Route path="/registro" element={<Registro />} />
 
         <Route path="/panel" element={<Dashboard />} />
+
+        <Route path="/transferencias" element={<Transferencias />} />
       </Routes>
     </BrowserRouter>
   );

@@ -25,9 +25,10 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
     // 💥 TRANSFERENCIA REAL
     @Override
-    public Transferencia realizarTransferencia(String cuentaOrigenNum,
-                                               String cuentaDestinoNum,
-                                               Float monto) {
+    public Transferencia realizarTransferencia(Long cuentaOrigenNum,
+                                               Long cuentaDestinoNum,
+                                               Float monto,
+                                               Long motivoId) {
 
         // 1. Validar monto
         if (monto <= 0) {
@@ -35,16 +36,13 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         }
 
         // 2. Buscar cuentas
-        Cuenta origen = cuentaRepositorio.findByAlias(cuentaOrigenNum)
+        Cuenta origen = cuentaRepositorio.findById(cuentaOrigenNum)
                 .orElseThrow(() -> new RuntimeException("Cuenta origen no encontrada"));
 
-        Cuenta destino = cuentaRepositorio.findByAlias(cuentaDestinoNum)
+        Cuenta destino = cuentaRepositorio.findById(cuentaDestinoNum)
                 .orElseThrow(() -> new RuntimeException("Cuenta destino no encontrada"));
 
-        // 3. Validar saldo
-        //if (origen.getSaldo() < monto) {
-          //  throw new RuntimeException("Saldo insuficiente");
-        //}
+
 
         // 1. Convertir el monto de float a BigDecimal de forma segura
         BigDecimal montoBI = BigDecimal.valueOf(monto);
@@ -55,10 +53,6 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
          throw new RuntimeException("Saldo insuficiente");
         }
 
-
-        // 4. Actualizar saldos
-      //  origen.setSaldo(origen.getSaldo() - monto);
-       // destino.setSaldo(destino.getSaldo() + monto);
 
 
         // 3. Actualizar saldos usando .subtract() y .add()
@@ -78,7 +72,7 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         return transferenciaRepositorio.save(transferencia);
     }
 
-    // 📊 Historial de una cuenta
+    //  Historial de una cuenta
     @Override
     @Transactional(readOnly = true)
     public List<Transferencia> historialCuenta(Long idCuenta) {
