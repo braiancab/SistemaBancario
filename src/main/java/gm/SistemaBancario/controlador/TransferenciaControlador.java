@@ -3,6 +3,9 @@ package gm.SistemaBancario.controlador;
 import gm.SistemaBancario.dto.TransferenciaDTO;
 import gm.SistemaBancario.modelo.Transferencia;
 import gm.SistemaBancario.servicio.TransferenciaServicio;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +31,32 @@ public class TransferenciaControlador {
                 dto.getMonto(),
                 dto.getMotivo()
         );
+
+    }
+    @PostMapping("/transferir")
+    public ResponseEntity<TransferenciaDTO> transferir(@RequestBody TransferenciaRequest request) {
+
+        TransferenciaDTO dto = servicio.realizarTransferencia(
+                request.getCuentaOrigen(),
+                request.getCuentaDestino(),
+                request.getMonto(),
+                request.getMotivo()
+        );
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/comprobante")
+    public ResponseEntity<byte[]> descargarPDF() {
+
+        TransferenciaDTO dto = servicio.obtenerUltimaTransferencia(); // o por ID
+
+        byte[] pdf = pdfService.generarPDF(dto);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=comprobante.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
     // Historial de una cuenta

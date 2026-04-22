@@ -1,5 +1,8 @@
 package gm.SistemaBancario.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 public class TransferenciaDTO {
 
     private Long cuentaOrigen;
@@ -9,6 +12,7 @@ public class TransferenciaDTO {
 
 
     public TransferenciaDTO() {}
+
 
     // Getters y Setters
     public Long getCuentaOrigen() {

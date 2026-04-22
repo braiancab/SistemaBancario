@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import jsPDF from "jspdf";
 
 function Transferencias() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ function Transferencias() {
   const [cuentaOrigen, setCuentaOrigen] = useState(null);
   const [cuentasDestino, setCuentasDestino] = useState([]);
   const [motivos, setMotivos] = useState([]);
+  const [comprobante, setComprobante] = useState(null);
 
   const [formData, setFormData] = useState({
     cuentaDestino: "",
@@ -90,9 +92,36 @@ function Transferencias() {
         },
         { headers: { Authorization: `Bearer ${token}` } },
       )
-      .then(() => {
+      .then((response) => {
         alert("Transferencia realizada correctamente");
-        navigate("/dashboard");
+
+        const destinoSeleccionado = cuentasDestino.find(
+          (c) => c.idCuenta === Number(formData.cuentaDestino),
+        );
+
+        const motivoSeleccionado = motivos.find(
+          (m) => m.idMotivo === Number(formData.motivo),
+        );
+
+        setComprobante({
+          cuentaOrigen:
+            cuentaOrigen.cliente.nombre + " " + cuentaOrigen.cliente.apellido,
+
+          cuentaDestino:
+            destinoSeleccionado.cliente.nombre +
+            " " +
+            destinoSeleccionado.cliente.apellido,
+
+          aliasDestino: destinoSeleccionado.alias,
+
+          monto: formData.monto,
+
+          motivo: motivoSeleccionado.motivo,
+
+          fecha: new Date().toLocaleString(),
+
+          codigoOperacion: "TRX-" + Date.now(),
+        });
       })
       .catch((error) => {
         console.error("Error completo:", error);
@@ -103,6 +132,24 @@ function Transferencias() {
           alert("Error de conexión con el servidor");
         }
       });
+  };
+
+  const descargarPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Comprobante de Transferencia", 20, 20);
+
+    doc.setFontSize(12);
+
+    doc.text(`Cuenta Origen: ${comprobante.cuentaOrigen}`, 20, 40);
+    doc.text(`Cuenta Destino: ${comprobante.cuentaDestino}`, 20, 50);
+    doc.text(`Monto: $${comprobante.monto}`, 20, 60);
+    doc.text(`Motivo: ${comprobante.motivo}`, 20, 70);
+    doc.text(`Fecha: ${comprobante.fecha}`, 20, 80);
+    doc.text(`Código Operación: ${comprobante.codigoOperacion}`, 20, 90);
+
+    doc.save("comprobante_transferencia.pdf");
   };
 
   return (
@@ -228,6 +275,34 @@ function Transferencias() {
           </div>
         </div>
       </div>
+      {comprobante && (
+        <div className="alert alert-success mt-4">
+          <h4>Transferencia Exitosa</h4>
+
+          <p>
+            <b>Origen:</b> {comprobante?.cuentaOrigen}
+          </p>
+          <p>
+            <b>Destino:</b> {comprobante?.cuentaDestino}
+          </p>
+          <p>
+            <b>Monto:</b> ${comprobante?.monto}
+          </p>
+          <p>
+            <b>Motivo:</b> {comprobante.motivo}
+          </p>
+          <p>
+            <b>Fecha:</b> {comprobante.fecha}
+          </p>
+          <p>
+            <b>Código:</b> {comprobante.codigoOperacion}
+          </p>
+
+          <button className="btn btn-danger" onClick={descargarPDF}>
+            Descargar PDF
+          </button>
+        </div>
+      )}
     </div>
   );
 }
