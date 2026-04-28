@@ -35,7 +35,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
     @Override
     @Transactional
     public OrdenExtraccion guardar(OrdenExtraccion orden) {
-        // Aquí podrías agregar validaciones de saldo antes de guardar
+
         return ordenRepositorio.save(orden);
     }
 

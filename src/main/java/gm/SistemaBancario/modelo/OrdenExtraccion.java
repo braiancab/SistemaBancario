@@ -17,6 +17,10 @@ public class OrdenExtraccion {
 
     private Double monto_orden;
 
+    @Column(nullable = false, length = 8)
+    private String dni;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cuenta_origen")
     private Cuenta cuentaOrigen;
@@ -26,10 +30,11 @@ public class OrdenExtraccion {
     public OrdenExtraccion() {
     }
 
-    public OrdenExtraccion(Long id_extraccion, String codigo, Double monto_orden, Cuenta cuentaOrigen) {
+    public OrdenExtraccion(Long id_extraccion, String codigo, Double monto_orden,String dni, Cuenta cuentaOrigen) {
         this.id_extraccion = id_extraccion;
         this.codigo = codigo;
         this.monto_orden = monto_orden;
+        this.dni = dni;
         this.cuentaOrigen = cuentaOrigen;
     }
 
@@ -49,6 +54,14 @@ public class OrdenExtraccion {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     public Double getMonto_orden() {
@@ -74,6 +87,7 @@ public class OrdenExtraccion {
                 "id_extraccion=" + id_extraccion +
                 ", codigo='" + codigo + '\'' +
                 ", monto_orden=" + monto_orden +
+                ", dni='" + dni + '\'' +
                 ", cuentaOrigen=" + (cuentaOrigen != null ? cuentaOrigen.getIdCuenta() : "null") +
                 '}';
     }
