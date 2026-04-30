@@ -22,7 +22,13 @@ export const useDashboard = (navigate) => {
 
     // Cuenta
     getCuentaByCliente(idCliente, token)
-      .then(res => setCuenta(res.data[0]))
+      .then(res => {
+       const cuentaData = res.data[0];
+        setCuenta(cuentaData);
+
+ localStorage.setItem("idCuenta", cuentaData.idCuenta);
+  })
+
       .catch(err => {
         console.error(err);
         navigate("/");

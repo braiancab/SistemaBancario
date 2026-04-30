@@ -4,6 +4,7 @@ import Login from './usuarios/Login';
 import Registro from './usuarios/Registro';
 import Dashboard from './panel/Dashboard';
 import Transferencias from "./panel/Transferencias";
+import HistorialTransferencias from './panel/HistorialTransferencias';
 
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/transferencias" element={<Transferencias />} />
+
+        <Route path="/movimientos" element={<HistorialTransferencias />} />
       </Routes>
     </BrowserRouter>
   );

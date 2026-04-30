@@ -37,6 +37,10 @@ function Dashboard() {
         <button className="btn btn-primary">
           Depositar
         </button>
+
+        <button className="btn btn-primary" onClick={() => navigate("/movimientos")}>
+          Movimientos
+        </button>
       </div>
     </div>
   );
