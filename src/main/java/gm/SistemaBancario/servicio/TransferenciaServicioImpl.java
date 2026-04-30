@@ -3,8 +3,10 @@ package gm.SistemaBancario.servicio;
 import gm.SistemaBancario.dto.TransferenciaComprobanteDTO;
 import gm.SistemaBancario.dto.TransferenciaDTO;
 import gm.SistemaBancario.modelo.Cuenta;
+import gm.SistemaBancario.modelo.MotivoTransferencia;
 import gm.SistemaBancario.modelo.Transferencia;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
+import gm.SistemaBancario.repositorio.MotivoTransferenciaRepositorio;
 import gm.SistemaBancario.repositorio.TransferenciaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +22,14 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
     private final CuentaRepositorio cuentaRepositorio;
     private final TransferenciaRepositorio transferenciaRepositorio;
+    private final MotivoTransferenciaRepositorio motivoRepositorio;
 
     public TransferenciaServicioImpl(CuentaRepositorio cuentaRepositorio,
-                                     TransferenciaRepositorio transferenciaRepositorio) {
+                                     TransferenciaRepositorio transferenciaRepositorio,
+                                     MotivoTransferenciaRepositorio motivoRepositorio) {
         this.cuentaRepositorio = cuentaRepositorio;
         this.transferenciaRepositorio = transferenciaRepositorio;
+        this.motivoRepositorio = motivoRepositorio;
     }
 
     public TransferenciaComprobanteDTO realizarTransferencia(TransferenciaDTO request) {
@@ -76,6 +81,8 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         Cuenta destino = cuentaRepositorio.findById(cuentaDestinoNum)
                 .orElseThrow(() -> new RuntimeException("Cuenta destino no encontrada"));
 
+        MotivoTransferencia motivo = motivoRepositorio.findById(motivoId)
+                .orElseThrow(() -> new RuntimeException("Motivo no encontrado"));
 
 
         // 1. Convertir el monto de float a BigDecimal de forma segura
@@ -106,6 +113,7 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         transferencia.setEstado("COMPLETADA");
         transferencia.setCuentaOrigen(origen);
         transferencia.setCuentaDestino(destino);
+        transferencia.setMotivoTransferencia(motivo);
 
         return transferenciaRepositorio.save(transferencia);
     }

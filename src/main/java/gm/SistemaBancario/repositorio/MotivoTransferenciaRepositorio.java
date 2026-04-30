@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface MotivoTransferenciaRepositorio extends JpaRepository<MotivoTransferencia, Long> {
 
     Optional<MotivoTransferencia> findByMotivo(String motivo);
+    Optional<MotivoTransferencia> findById(Long idMotivo);
 }
 
