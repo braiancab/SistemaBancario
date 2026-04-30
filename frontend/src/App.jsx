@@ -1,27 +1,38 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-import Login from './usuarios/Login';
-import Registro from './usuarios/Registro';
-import Dashboard from './panel/Dashboard';
-import Transferencias from "./panel/Transferencias";
-import HistorialTransferencias from './panel/HistorialTransferencias';
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import  Login  from "./usuarios/Login";
+import  Registro  from "./usuarios/Registro";
+import  Dashboard  from "./panel/Dashboard"; 
+import  Transferencias  from "./panel/Transferencias";
+import  CrearCuenta  from "./panel/CrearCuenta";
+import  BarraNavegacion  from "./componentes/BarraNavegacion";
 
 function App() {
+  
+  const estaAutenticado = () => {
+    return localStorage.getItem("token") !== null;
+  };
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta principal: cuando el cliente entra a la página, ve el Login */}
-        <Route path="/" element={<Login />} />
-        
-        {/* Ruta secundaria: cuando va a /registro, ve el formulario nuevo */}
+        <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="/transferencias" element={<Transferencias />} />
-
-        <Route path="/movimientos" element={<HistorialTransferencias />} />
+        
+        <Route
+          path="/dashboard" 
+          element={estaAutenticado() ? <><BarraNavegacion /><Dashboard /></> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/crear-cuenta" 
+          element={estaAutenticado() ? <><BarraNavegacion /><CrearCuenta /></> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/transferencias" 
+          element={estaAutenticado() ? <><BarraNavegacion /><Transferencias /></> : <Navigate to="/login" />} 
+        />
+        {/* Si entra a cualquier otra ruta rara, lo mandamos al login */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );

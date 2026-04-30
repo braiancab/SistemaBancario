@@ -9,3 +9,10 @@ export const getCuentaByCliente = (idCliente, token) => {
     },
   });
 };
+export const crearCuenta = (nuevaCuenta, token) => {
+  return axios.post(`${API_URL}`, nuevaCuenta, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

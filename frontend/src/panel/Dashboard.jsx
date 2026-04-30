@@ -17,9 +17,6 @@ function Dashboard() {
 
       <div className="d-flex justify-content-between mb-4">
         <h2>Mi Banco</h2>
-        <button className="btn btn-danger" onClick={handleCerrarSesion}>
-          Cerrar sesión
-        </button>
       </div>
 
       <ClienteCard cliente={cliente} />
