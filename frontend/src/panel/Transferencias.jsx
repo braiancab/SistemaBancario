@@ -157,12 +157,7 @@ function Transferencias() {
       <div className="row mb-4">
         <div className="col d-flex justify-content-between align-items-center">
           <h2>Mi Banco</h2>
-          <button
-            className="btn btn-outline-danger"
-            onClick={handleCerrarSesion}
-          >
-            Cerrar Sesión
-          </button>
+          
         </div>
       </div>
 

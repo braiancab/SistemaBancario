@@ -23,8 +23,14 @@ function Dashboard() {
       <CuentaCard cuenta={cuenta} />
 
       <div className="d-flex gap-3">
-        <button className="btn btn-success" onClick={() => navigate("/transferencias")}>
-          Transferir
+        <button 
+            className="btn btn-success" 
+            onClick={() => navigate("/transferencias")}
+            // Si 'cuenta' es null o undefined, !cuenta será true y el botón se deshabilita
+            disabled={!cuenta} 
+            title={!cuenta ? "Debes crear una cuenta para poder transferir" : ""}
+          >
+            Transferir
         </button>
 
         <button className="btn btn-secondary">
