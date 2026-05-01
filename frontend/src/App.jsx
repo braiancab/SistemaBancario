@@ -6,6 +6,7 @@ import  Transferencias  from "./panel/Transferencias";
 import  CrearCuenta  from "./panel/CrearCuenta";
 import  BarraNavegacion  from "./componentes/BarraNavegacion";
 import HistorialTransferencias from "./panel/HistorialTransferencias";
+import PieDePagina from "./componentes/PieDePagina";
 
 function App() {
   
@@ -15,30 +16,35 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
+      
+      <div className="d-flex flex-column min-vh-100"> 
+        <div className="flex-grow-1">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/registro" element={<Registro />} />
 
-        
-        <Route
-          path="/dashboard" 
-          element={estaAutenticado() ? <><BarraNavegacion /><Dashboard /></> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/crear-cuenta" 
-          element={estaAutenticado() ? <><BarraNavegacion /><CrearCuenta /></> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/transferencias" 
-          element={estaAutenticado() ? <><BarraNavegacion /><Transferencias /></> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/movimientos" 
-          element={estaAutenticado() ? <><BarraNavegacion /><HistorialTransferencias /></> : <Navigate to="/login" />} 
-        />
-        {/* Si entra a cualquier otra ruta rara, lo mandamos al login */}
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+            
+            <Route 
+              path="/dashboard" 
+              element={estaAutenticado() ? <><BarraNavegacion /><Dashboard /><PieDePagina /></> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/crear-cuenta" 
+              element={estaAutenticado() ? <><BarraNavegacion /><CrearCuenta /><PieDePagina /></> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/transferencias" 
+              element={estaAutenticado() ? <><BarraNavegacion /><Transferencias /><PieDePagina /></> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/movimientos" 
+              element={estaAutenticado() ? <><BarraNavegacion /><HistorialTransferencias /><PieDePagina /></> : <Navigate to="/login" />} 
+            />
+
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
+        </div>
+      </div>
     </BrowserRouter>
   );
 }

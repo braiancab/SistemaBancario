@@ -14,7 +14,7 @@ export const CrearCuenta = () => {
   const manejarEnvio = async (e) => {
     e.preventDefault();
     
-    // 2. Recuperamos el ID del cliente y el Token del localStorage
+    // Recuperamos el ID del cliente y el Token del localStorage
     const idCliente = localStorage.getItem("idCliente");
     const token = localStorage.getItem("token"); // Asumiendo que lo guardás como 'token'
 
@@ -30,7 +30,7 @@ export const CrearCuenta = () => {
         estadoCuenta: { idEstado: 1 } 
       };
 
-      // 3. Llamamos a tu servicio pasándole los datos y el token
+      //  Llamamos a tu servicio pasándole los datos y el token
       await crearCuenta(nuevaCuenta, token);
       
       setMensaje({ texto: "¡Cuenta creada exitosamente!", tipo: "success" });
@@ -38,7 +38,7 @@ export const CrearCuenta = () => {
       
     } catch (error) {
       console.error("Error al crear cuenta:", error);
-      // Opcional: Manejar errores específicos (ej. 403 No autorizado)
+      //  Manejar errores específicos (ej. 403 No autorizado)
       const errorMsg = error.response?.data?.message || "Hubo un error al intentar crear la cuenta.";
       setMensaje({ texto: errorMsg, tipo: "danger" });
     }
