@@ -5,6 +5,7 @@ import  Dashboard  from "./panel/Dashboard";
 import  Transferencias  from "./panel/Transferencias";
 import  CrearCuenta  from "./panel/CrearCuenta";
 import  BarraNavegacion  from "./componentes/BarraNavegacion";
+import HistorialTransferencias from "./panel/HistorialTransferencias";
 
 function App() {
   
@@ -30,6 +31,10 @@ function App() {
         <Route 
           path="/transferencias" 
           element={estaAutenticado() ? <><BarraNavegacion /><Transferencias /></> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/movimientos" 
+          element={estaAutenticado() ? <><BarraNavegacion /><HistorialTransferencias /></> : <Navigate to="/login" />} 
         />
         {/* Si entra a cualquier otra ruta rara, lo mandamos al login */}
         <Route path="*" element={<Navigate to="/login" />} />

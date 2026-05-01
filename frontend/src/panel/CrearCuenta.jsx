@@ -7,9 +7,8 @@ export const CrearCuenta = () => {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
 
   const tiposDisponibles = [
-    { id: 1, nombre: "Caja de Ahorro en Pesos" },
+    { id: 1, nombre: "Caja de Ahorro" },
     { id: 2, nombre: "Cuenta Corriente" },
-    { id: 3, nombre: "Caja de Ahorro en Dólares" }
   ];
 
   const manejarEnvio = async (e) => {

@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-// 1. Importamos useState y useEffect
 import { useState, useEffect } from "react";
-// 2. Importamos tu servicio de cliente que me mostraste antes
 import { getClienteById } from "../servicio/clienteServicio";
+import { getCuentaByCliente } from "../servicio/cuentaServicio";
 
 export const BarraNavegacion = () => {
   const navegar = useNavigate();
-  // 3. Creamos un estado para guardar el nombre (arranca vacío)
+  //  Creamos un estado para guardar el nombre (arranca vacío)
   const [nombreCliente, setNombreCliente] = useState("");
+  const [tieneCuenta, setTieneCuenta] = useState(false);
 
-  // 4. Usamos useEffect para buscar el nombre apenas carga la barra
+  //  Usamos useEffect para buscar el nombre apenas carga la barra
   useEffect(() => {
     const idCliente = localStorage.getItem("idCliente");
     const token = localStorage.getItem("token");
@@ -18,14 +18,22 @@ export const BarraNavegacion = () => {
       // Llamamos a tu función de clienteServicio
       getClienteById(idCliente, token)
         .then((respuesta) => {
-          // Guardamos el nombre que nos devuelve Java. 
-          // OJO: Asumo que en tu modelo de Java se llama "nombre". 
-          // Si se llama "nombres" o de otra forma, cambialo acá abajo:
+         
           setNombreCliente(respuesta.data.nombre); 
         })
         .catch((error) => {
           console.error("Error al traer los datos del cliente:", error);
         });
+
+
+        getCuentaByCliente(idCliente, token)
+        .then((res) => {
+          // Si el array tiene al menos una cuenta, activamos el permiso
+          if (res.data && res.data.length > 0) {
+            setTieneCuenta(true);
+          }
+        })
+        .catch((err) => console.error("Error cuenta:", err));
     }
   }, []); // Los corchetes vacíos significan "ejecutar solo una vez al cargar"
 
@@ -60,14 +68,18 @@ export const BarraNavegacion = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link fw-medium text-dark rounded px-3" to="/transferencias">
-                Transferencias
+              <Link 
+                className={`nav-link fw-medium rounded px-3 ${!tieneCuenta ? 'text-muted pe-none' : 'text-dark'}`} 
+                to={tieneCuenta ? "/transferencias" : "#"}
+                title={!tieneCuenta ? "Primero debés abrir una cuenta" : ""}
+              >
+                Transferencias {!tieneCuenta && "🔒"}
               </Link>
             </li>
           </ul>
           
           <div className="d-flex align-items-center gap-4">
-            {/* 5. Mostramos el nombre dinámico. Si por alguna razón todavía no cargó, mostramos "Usuario" por defecto */}
+            {/*Mostramos el nombre dinámico. Si por alguna razón todavía no cargó, mostramos "Usuario" por defecto */}
             <span className="text-secondary fw-medium d-none d-lg-block">
               ¡Hola, {nombreCliente || "Usuario"}! 👋
             </span>
