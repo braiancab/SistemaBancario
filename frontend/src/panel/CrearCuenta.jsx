@@ -24,10 +24,10 @@ export const CrearCuenta = () => {
     }
 
     try {
-      const nuevaCuenta = {
-        cliente: { idCliente: parseInt(idCliente) },
-        tipoCuenta: { idTipo: parseInt(idTipoCuenta) },
-        estadoCuenta: { idEstado: 1 } 
+     const nuevaCuenta = {
+        idCliente: parseInt(idCliente),
+        idTipo: parseInt(idTipoCuenta),
+        idEstado: 1 
       };
 
       //  Llamamos a tu servicio pasándole los datos y el token

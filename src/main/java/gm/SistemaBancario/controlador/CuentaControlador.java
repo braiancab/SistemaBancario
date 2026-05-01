@@ -1,5 +1,5 @@
 package gm.SistemaBancario.controlador;
-
+import java.util.Map;
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.servicio.CuentaServicio;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cuentas")
-@CrossOrigin(origins = "*")
+
 public class CuentaControlador {
 
     private final CuentaServicio cuentaServicio;
@@ -19,9 +19,13 @@ public class CuentaControlador {
 
     //Crear cuenta
     @PostMapping
-    public Cuenta crearCuenta(@RequestParam Long idCliente,
-                              @RequestParam Long idTipo,
-                              @RequestParam Long idEstado) {
+    public Cuenta crearCuenta(@RequestBody Map<String, Long> datos) {
+        // Extraemos los datos directamente del JSON que nos manda React
+        Long idCliente = datos.get("idCliente");
+        Long idTipo = datos.get("idTipo");
+        Long idEstado = datos.get("idEstado");
+
+        // Se los pasamos a tu servicio tal como los espera
         return cuentaServicio.crearCuenta(idCliente, idTipo, idEstado);
     }
 
