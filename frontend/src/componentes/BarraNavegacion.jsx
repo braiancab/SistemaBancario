@@ -63,7 +63,7 @@ export const BarraNavegacion = () => {
             </li>
             <li className="nav-item">
               <Link 
-                className={`nav-link fw-medium ${!tieneCuenta ? 'text-muted pe-none' : 'text-light hover-white'}`} 
+                className={`nav-link fw-medium ${!tieneCuenta ? 'text-light-emphasis hover-white' : 'text-light hover-white'}`} 
                 to={tieneCuenta ? "/transferencias" : "#"}
                 title={!tieneCuenta ? "Primero debés abrir una cuenta" : ""}
               >
