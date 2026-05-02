@@ -70,6 +70,14 @@ export const BarraNavegacion = () => {
                 Transferencias {!tieneCuenta && "🔒"}
               </Link>
             </li>
+             <li className="nav-item">
+              <Link className="nav-link fw-medium text-light hover-white" to="/movimientos">
+                Movimientos
+              </Link>
+            </li>
+
+
+
           </ul>
 
           <div className="d-flex align-items-center gap-4">
