@@ -63,7 +63,7 @@ function HistorialTransferencias() {
                     {t.cuentaDestino.cliente.apellido}
                   </td>
                   <td>${t.monto}</td>
-                  <td>{t.motivoTransferencia?.motivo}</td>
+                 <td>{t.motivo?.motivo}</td>
                   <td>{t.estado}</td>
                 </tr>
               ))}
@@ -95,7 +95,7 @@ function HistorialTransferencias() {
                     {t.cuentaOrigen.cliente.apellido}
                   </td>
                   <td>${t.monto}</td>
-                  <td>{t.motivoTransferencia?.motivo}</td>
+                  <td>{t.motivo?.motivo}</td>
                   <td>{t.estado}</td>
                 </tr>
               ))}
