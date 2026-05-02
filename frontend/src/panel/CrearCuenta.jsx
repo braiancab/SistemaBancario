@@ -32,6 +32,7 @@ export const CrearCuenta = () => {
 
       //  Llamamos a tu servicio pasándole los datos y el token
       await crearCuenta(nuevaCuenta, token);
+      window.dispatchEvent(new Event("cuentaCreada")); //probaaaarrr
       
       setMensaje({ texto: "¡Cuenta creada exitosamente!", tipo: "success" });
       setIdTipoCuenta(""); 
