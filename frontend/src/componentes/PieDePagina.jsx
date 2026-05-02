@@ -29,7 +29,9 @@ export const PieDePagina = () => {
                         <h5 className="text-uppercase mb-4 fw-bold">Navegación</h5>
                         <p><Link to="/dashboard" className="text-decoration-none text-white-50 hover-white">Inicio</Link></p>
                         <p><Link to="/crear-cuenta" className="text-decoration-none text-white-50 hover-white">Nueva Cuenta</Link></p>
-                        <p><Link to="/transferencias" className="text-decoration-none text-white-50 hover-white">Transferencias</Link></p>
+                        <p><Link to="/transferencias" className="text-decoration-none text-white-50 hover-white">Transferir</Link></p>
+                        <p><Link to="/movimientos" className="text-decoration-none text-white-50 hover-white">Movimientos</Link></p>
+                        <p><Link to="/extraccion" className="text-decoration-none text-white-50 hover-white">Orden extraccion</Link></p>
                     </div>
 
                     {/* Columna 3: Contacto */}
