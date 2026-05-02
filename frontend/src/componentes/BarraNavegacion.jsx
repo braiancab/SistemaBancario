@@ -117,12 +117,21 @@ export const BarraNavegacion = () => {
               <Link
                 className="nav-link fw-medium text-light hover-white"
                 to={cuenta ? "/transferencias" : "#"}
-                  title={!tieneCuenta ? "Primero debés abrir una cuenta" : ""}
+                title={!tieneCuenta ? "Primero debés abrir una cuenta" : ""}
                 onClick={(e) => {
                   if (!cuenta) e.preventDefault();
                 }}
               >
                 Transferir
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                className="nav-link fw-medium text-light hover-white"
+                to="/extraccion"
+              >
+                Orden extraccion
               </Link>
             </li>
           </ul>

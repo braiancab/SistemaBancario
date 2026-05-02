@@ -7,6 +7,7 @@ import  CrearCuenta  from "./panel/CrearCuenta";
 import  BarraNavegacion  from "./componentes/BarraNavegacion";
 import HistorialTransferencias from "./panel/HistorialTransferencias";
 import PieDePagina from "./componentes/PieDePagina";
+import SolicitarExtraccion from "./panel/solicitarExtraccion";
 
 function App() {
   
@@ -41,6 +42,12 @@ function App() {
               element={estaAutenticado() ? <><BarraNavegacion /><HistorialTransferencias /><PieDePagina /></> : <Navigate to="/login" />} 
             />
 
+            <Route path="/extraccion" 
+             element={estaAutenticado() ? <><BarraNavegacion /><SolicitarExtraccion /><PieDePagina /></> : <Navigate to="/login" />} 
+
+
+
+             />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
