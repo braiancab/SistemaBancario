@@ -5,6 +5,7 @@ import { getCuentaByCliente } from "../servicio/cuentaServicio";
 export const useDashboard = (navigate) => {
   const [cliente, setCliente] = useState(null);
   const [cuenta, setCuenta] = useState(null);
+  const [cuentas, setCuentas] = useState([]);
 
   const cargarDatos = () => {
     const token = localStorage.getItem("token");
@@ -22,8 +23,9 @@ export const useDashboard = (navigate) => {
     getCuentaByCliente(idCliente, token)
       .then(res => {
         if (res.data && res.data.length > 0) {
-          const cuentaData = res.data[0];
-          setCuenta(cuentaData);
+         // const cuentaData = res.data[0];
+         // setCuenta(cuentaData);
+         setCuentas(res.data || []);
           localStorage.setItem("idCuenta", cuentaData.idCuenta);
         } else {
           setCuenta(null);
@@ -39,5 +41,5 @@ export const useDashboard = (navigate) => {
     cargarDatos();
   }, [navigate]);
 
-  return { cliente, cuenta, recargar: cargarDatos };
+  return { cliente, cuentas, recargar: cargarDatos };
 };
