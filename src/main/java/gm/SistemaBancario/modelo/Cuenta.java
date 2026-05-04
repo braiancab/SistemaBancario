@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "cuentas")
+@Table(name = "cuentas",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"id_cliente", "tipo_cuenta"})
+)
 public class Cuenta {
 
     @Id
