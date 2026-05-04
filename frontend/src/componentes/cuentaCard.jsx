@@ -11,6 +11,7 @@ const cuentaCard = ({ cuenta }) => {
         <p><strong>N° Cuenta:</strong> {cuenta.idCuenta}</p>
         <p><strong>CVU:</strong> {cuenta.cvu}</p>
         <p><strong>Alias:</strong> {cuenta.alias}</p>
+        <p><strong>Tipo:</strong> {cuenta.tipoCuenta?.tipo}</p>
         <p className="text-success fw-bold">
           <strong>Saldo:</strong> $ {cuenta.saldo}
         </p>
