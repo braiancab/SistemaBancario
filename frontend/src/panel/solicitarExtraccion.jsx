@@ -9,25 +9,23 @@ const SolicitarExtraccion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMensaje(null); // Limpiamos errores anteriores
 
     const token = localStorage.getItem("token");
     const idCuenta = localStorage.getItem("idCuenta");
 
     if (!token || !idCuenta) {
-      setMensaje({ tipo: "danger", texto: "Sesión inválida" });
+      setMensaje({ tipo: "danger", texto: "Sesión inválida o no hay cuenta activa." });
       return;
     }
-    if (!idCuenta) {
-  setMensaje({ tipo: "danger", texto: "No hay cuenta activa" });
-  return;
-}
-    if (monto <= 0) {
-      setMensaje({ tipo: "danger", texto: "El monto debe ser mayor a 0" });
+
+    if (parseFloat(monto) <= 0) {
+      setMensaje({ tipo: "danger", texto: "El monto debe ser mayor a 0." });
       return;
     }
 
     if (dni.length < 7) {
-      setMensaje({ tipo: "danger", texto: "DNI inválido" });
+      setMensaje({ tipo: "danger", texto: "DNI inválido." });
       return;
     }
 
@@ -35,7 +33,7 @@ const SolicitarExtraccion = () => {
       const nuevaOrden = {
         monto_orden: parseFloat(monto),
         dni: dni,
-        cuentaOrigen: {
+        cuentaOrigen: {                 
           idCuenta: parseInt(idCuenta),
         },
       };
@@ -43,21 +41,23 @@ const SolicitarExtraccion = () => {
       const res = await crearOrdenExtraccion(nuevaOrden, token);
 
       setOrdenCreada(res.data);
-      setMensaje({ tipo: "success", texto: "Orden generada correctamente" });
+      setMensaje({ tipo: "success", texto: "¡Orden generada correctamente!" });
 
-      // limpiar form
+      // Limpiar form
       setMonto("");
       setDni("");
 
     } catch (error) {
-  console.error("ERROR COMPLETO:", error);
-  console.error("RESPUESTA:", error.response);
-
-  setMensaje({
-    tipo: "danger",
-    texto: error.response?.data?.message || "Error al generar la orden",
-  });
-}
+      console.error("ERROR COMPLETO:", error);
+      
+      const errorMsg = error.response?.data?.message || error.response?.data || "Error al generar la orden.";
+      
+      setMensaje({
+        tipo: "danger",
+       
+        texto: typeof errorMsg === 'string' ? errorMsg : "Ocurrió un error inesperado.",
+      });
+    }
   };
 
   return (

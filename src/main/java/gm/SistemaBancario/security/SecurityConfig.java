@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/cuentas/**").permitAll()
 
                         .requestMatchers("/api/transferencias/**").permitAll()
+                       // .requestMatchers("/api/ordenes_extraccion/**").permitAll()
+                        .requestMatchers("/api/ordenes_extraccion/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
