@@ -5,7 +5,7 @@ import CuentaCard from "../componentes/cuentaCard";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { cliente, cuentas } = useDashboard(navigate);
+  const { cliente, cuentas, recargar }= useDashboard(navigate);
 
   const handleCerrarSesion = () => {
     localStorage.clear();
@@ -20,12 +20,18 @@ function Dashboard() {
 
       <ClienteCard cliente={cliente} />
       <div className="row">
-  {cuentas.map((cuenta) => (
-    <div className="col-md-6" key={cuenta.idCuenta}>
-      <CuentaCard cuenta={cuenta} />
-    </div>
-  ))}
-</div>
+        {cuentas && cuentas.length > 0 ? (
+          cuentas.map((cuenta) => (
+            <div className="col-md-6" key={cuenta.idCuenta}> 
+              <CuentaCard cuenta={cuenta} />
+            </div>
+          ))
+        ) : (
+          <div className="col-12 text-center mt-4">
+            <p className="text-muted fw-medium">Todavía no tenés cuentas creadas.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
