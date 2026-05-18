@@ -42,4 +42,20 @@ public class TransferenciaControlador {
     public List<Transferencia> historial(@PathVariable Long idCuenta) {
         return transferenciaServicio.historialCuenta(idCuenta);
     }
+
+
+    //Historial de transferencias enviadas
+
+    @GetMapping("/enviadas/{idCuenta}")
+    public List<Transferencia> obtenerEnviadas(@PathVariable Long idCuenta) {
+        return transferenciaServicio.obtenerEnviadas(idCuenta);
+    }
+
+    //Historial de transferencias recibidas
+    @GetMapping("/recibidas/{idCuenta}")
+    public List<Transferencia> obtenerRecibidas(@PathVariable Long idCuenta) {
+        return transferenciaServicio.obtenerRecibidas(idCuenta);
+    }
+
+
 }
