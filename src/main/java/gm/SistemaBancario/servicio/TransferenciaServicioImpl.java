@@ -125,4 +125,13 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         return transferenciaRepositorio
                 .findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(idCuenta, idCuenta);
     }
+
+    //historial transferencias enviadas
+    public List<Transferencia> obtenerEnviadas(Long idCuenta) {
+        return transferenciaRepositorio.findByCuentaOrigenIdCuenta(idCuenta);
+    }
+    //historial transferencias recibidas
+    public List<Transferencia> obtenerRecibidas(Long idCuenta) {
+        return transferenciaRepositorio.findByCuentaDestinoIdCuenta(idCuenta);
+    }
 }

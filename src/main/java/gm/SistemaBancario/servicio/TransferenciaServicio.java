@@ -11,4 +11,9 @@ public interface TransferenciaServicio {
                                         Long motivoId);
 
     List<Transferencia> historialCuenta(Long idCuenta);
+
+
+     List<Transferencia> obtenerRecibidas(Long idCuenta);
+
+     List<Transferencia> obtenerEnviadas(Long idCuenta);
 }
