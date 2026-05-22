@@ -7,7 +7,7 @@ import  CrearCuenta  from "./panel/CrearCuenta";
 import  BarraNavegacion  from "./componentes/BarraNavegacion";
 import HistorialTransferencias from "./panel/HistorialTransferencias";
 import PieDePagina from "./componentes/PieDePagina";
-import SolicitarExtraccion from "./panel/solicitarExtraccion";
+import SolicitarExtraccion from "./panel/SolicitarExtraccion";
 
 function App() {
   
