@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const cuentaCard = ({ cuenta }) => {
+    const [mostrarSaldo, setMostrarSaldo] = useState(false);
   if (!cuenta) return null;
 
   return (
@@ -12,9 +15,16 @@ const cuentaCard = ({ cuenta }) => {
         <p><strong>CVU:</strong> {cuenta.cvu}</p>
         <p><strong>Alias:</strong> {cuenta.alias}</p>
         <p><strong>Tipo:</strong> {cuenta.tipoCuenta?.tipo}</p>
-        <p className="text-success fw-bold">
-          <strong>Saldo:</strong> $ {cuenta.saldo}
+         <p className="text-success fw-bold">
+          <strong>Saldo:</strong>{" "}
+          {mostrarSaldo ? `$ ${cuenta.saldo}` : "••••••"}
         </p>
+          <button
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => setMostrarSaldo(!mostrarSaldo)}
+        >
+          {mostrarSaldo ? "Ocultar Saldo" : "Ver Saldo"}
+        </button>
       </div>
     </div>
   );
