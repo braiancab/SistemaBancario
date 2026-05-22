@@ -51,7 +51,7 @@ export const PieDePagina = () => {
                     {/* Columna de ancho completo con texto centrado */}
                     <div className="col-12 text-center">
                         <p className="text-white-50 mb-2">
-                            © {obtenerAnioActual()} Todos los derechos reservados:
+                            © {obtenerAnioActual()} Todos los derechos reservados
                         </p>  
                     </div>
                 </div>
