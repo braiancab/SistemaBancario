@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { crearOrdenExtraccion } from "../servicio/ordenExtraccionServicio";
+import { getCuentaByCliente } from "../servicio/cuentaServicio";
 import jsPDF from "jspdf";
 
 
@@ -8,13 +9,36 @@ const SolicitarExtraccion = () => {
   const [dni, setDni] = useState("");
   const [mensaje, setMensaje] = useState(null);
   const [ordenCreada, setOrdenCreada] = useState(null);
+  //Constantes para elegir cuenta
+  const [cuentas, setCuentas] = useState([]);
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState("");
+
+useEffect(() => {
+
+  const token = localStorage.getItem("token");
+  const idCliente = localStorage.getItem("idCliente");
+
+  getCuentaByCliente(idCliente, token)
+    .then((res) => {
+
+      setCuentas(res.data);
+
+      if (res.data.length > 0) {
+        setCuentaSeleccionada(res.data[0].idCuenta);
+      }
+
+    })
+    .catch(console.error);
+
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensaje(null); // Limpiamos errores anteriores
 
     const token = localStorage.getItem("token");
-    const idCuenta = localStorage.getItem("idCuenta");
+const idCuenta = cuentaSeleccionada;
+const idCliente = localStorage.getItem("idCliente");
 
     if (!token || !idCuenta) {
       setMensaje({ tipo: "danger", texto: "Sesión inválida o no hay cuenta activa." });
@@ -45,6 +69,10 @@ const SolicitarExtraccion = () => {
       setOrdenCreada(res.data);
       setMensaje({ tipo: "success", texto: "¡Orden generada correctamente!" });
 
+        const cuentasActualizadas =
+      await getCuentaByCliente(idCliente, token);
+
+setCuentas(cuentasActualizadas.data);
       // Limpiar form
       setMonto("");
       setDni("");
@@ -59,7 +87,10 @@ const SolicitarExtraccion = () => {
        
         texto: typeof errorMsg === 'string' ? errorMsg : "Ocurrió un error inesperado.",
       });
+
     }
+
+   
   };
 
   return (
@@ -76,35 +107,63 @@ const SolicitarExtraccion = () => {
               {mensaje.texto}
             </div>
           )}
+<form onSubmit={handleSubmit}>
 
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">Monto</label>
-              <input
-                type="number"
-                className="form-control"
-                value={monto}
-                onChange={(e) => setMonto(e.target.value)}
-                required
-              />
-            </div>
+  <div className="mb-3">
+    <label className="form-label">
+      Cuenta de origen
+    </label>
 
-            <div className="mb-3">
-              <label className="form-label">DNI</label>
-              <input
-                type="text"
-                className="form-control"
-                value={dni}
-                onChange={(e) => setDni(e.target.value)}
-                required
-              />
-            </div>
+    <select
+      className="form-select"
+      value={cuentaSeleccionada}
+      onChange={(e) =>
+        setCuentaSeleccionada(e.target.value)
+      }
+    >
+      {cuentas.map((cuenta) => (
+        <option
+          key={cuenta.idCuenta}
+          value={cuenta.idCuenta}
+        >
+          {cuenta.cvu} - Saldo: ${cuenta.saldo}
+        </option>
+      ))}
+    </select>
+  </div>
 
-            <button className="btn btn-primary w-100">
-              Generar Orden
-            </button>
-          </form>
+ 
 
+  <div className="mb-3">
+    <label className="form-label">Monto</label>
+    <input
+      type="number"
+      className="form-control"
+      value={monto}
+      onChange={(e) => setMonto(e.target.value)}
+      required
+    />
+  </div>
+
+  <div className="mb-3">
+    <label className="form-label">DNI</label>
+    <input
+      type="text"
+      className="form-control"
+      value={dni}
+      onChange={(e) => setDni(e.target.value)}
+      required
+    />
+  </div>
+
+ <button
+  className="btn btn-primary w-100"
+  disabled={!cuentaSeleccionada}
+>
+  Generar Orden
+</button>
+
+</form>
         </div>
       </div>
 
