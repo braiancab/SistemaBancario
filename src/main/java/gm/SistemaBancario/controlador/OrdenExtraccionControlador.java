@@ -38,15 +38,10 @@ public class OrdenExtraccionControlador {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Crear una nueva orden
     @PostMapping
-    public ResponseEntity<OrdenExtraccion> crear(@RequestBody OrdenExtraccion orden) {
-        try {
-            OrdenExtraccion nuevaOrden = ordenServicio.guardar(orden);
-            return new ResponseEntity<>(nuevaOrden, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public OrdenExtraccion crearOrden(
+            @RequestBody OrdenExtraccion orden) {
+        return ordenServicio.crearOrden(orden);
     }
 
     // Eliminar una orden
