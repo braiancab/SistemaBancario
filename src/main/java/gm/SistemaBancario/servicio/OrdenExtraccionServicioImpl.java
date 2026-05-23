@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,27 +37,37 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         return ordenRepositorio.findById(id);
     }
 
+
     @Override
     @Transactional
-    public OrdenExtraccion guardar(OrdenExtraccion orden) {
+    public OrdenExtraccion crearOrden(OrdenExtraccion orden) {
 
-       if (orden.getCuentaOrigen() == null || orden.getCuentaOrigen().getIdCuenta() == null) {
-        throw new RuntimeException("Cuenta origen inválida");
+        Cuenta cuenta = cuentarepositorio.findById(
+                orden.getCuentaOrigen().getIdCuenta()
+        ).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        // usamos compare to para convertir el monto de tipo double a bigdecimal y poder compararlos
+        if(cuenta.getSaldo().compareTo(BigDecimal.valueOf(orden.getMonto_orden())) < 0) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+
+
+        //BigDecimal resultado = total.subtract(BigDecimal.valueOf(descuento));
+        BigDecimal retirado = BigDecimal.valueOf(orden.getMonto_orden());
+
+        cuenta.setSaldo(
+
+
+
+                cuenta.getSaldo().subtract(retirado)
+        );
+
+        cuentarepositorio.save(cuenta);
+
+        orden.setCuentaOrigen(cuenta);
+
+        return ordenRepositorio.save(orden);
     }
-
-    Long idCuenta = orden.getCuentaOrigen().getIdCuenta();
-
-    Cuenta cuenta = cuentarepositorio.findById(idCuenta)
-        .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
-
-    orden.setCuentaOrigen(cuenta);
-
-    orden.setCodigo(UUID.randomUUID().toString().substring(0,6));
-
-    return ordenRepositorio.save(orden);
-    }
-
-
   
 
     @Override
