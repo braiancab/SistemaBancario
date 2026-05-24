@@ -7,10 +7,18 @@ function realizarTransferencia() {
   const navigate = useNavigate();
 
   // Estados
-  const [cuentaOrigen, setCuentaOrigen] = useState(null);
+  //const [cuentaOrigen, setCuentaOrigen] = useState(null);
   const [cuentasDestino, setCuentasDestino] = useState([]);
   const [motivos, setMotivos] = useState([]);
   const [comprobante, setComprobante] = useState(null);
+
+  //Constante para elegir su cuenta
+  const [cuentasOrigen, setCuentasOrigen] = useState([]);
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState("");
+ 
+  const cuentaOrigen = cuentasOrigen.find(
+  (c) => c.idCuenta === Number(cuentaSeleccionada)
+);
 
   const [formData, setFormData] = useState({
     cuentaDestino: "",
@@ -45,8 +53,11 @@ function realizarTransferencia() {
         headers,
       })
       .then((response) => {
-        // Asumimos que response.data es el objeto cuenta que mostraste
-        setCuentaOrigen(response.data[0] || response.data);
+        setCuentasOrigen(response.data);
+
+        if (response.data.length > 0) {
+          setCuentaSeleccionada(response.data[0].idCuenta);
+        }
       })
       .catch((error) => console.error("Error cuenta origen:", error));
 
@@ -80,7 +91,10 @@ function realizarTransferencia() {
     }
 
     const token = localStorage.getItem("token");
-
+if (Number(formData.monto) > cuentaOrigen.saldo) {
+  alert("Saldo insuficiente");
+  return;
+}
     axios
       .post(
         "http://localhost:8080/api/transferencias",
@@ -157,7 +171,6 @@ function realizarTransferencia() {
       <div className="row mb-4">
         <div className="col d-flex justify-content-between align-items-center">
           <h2>Mi Banco</h2>
-          
         </div>
       </div>
 
@@ -175,16 +188,18 @@ function realizarTransferencia() {
                   <label className="form-label fw-bold">
                     Cuenta Origen (Titular)
                   </label>
-                  <input
-                    type="text"
-                    className="form-control bg-light"
-                    value={
-                      cuentaOrigen && cuentaOrigen.cliente
-                        ? `${cuentaOrigen.cliente.nombre} ${cuentaOrigen.cliente.apellido} - ${cuentaOrigen.alias}`
-                        : "Cargando datos..."
-                    }
-                    readOnly
-                  />
+                  <select
+                    className="form-select"
+                    value={cuentaSeleccionada}
+                    onChange={(e) => setCuentaSeleccionada(e.target.value)}
+                  >
+                    {cuentasOrigen.map((cuenta) => (
+                      <option key={cuenta.idCuenta} value={cuenta.idCuenta}>
+                        {cuenta.alias} - Saldo: $
+                        {cuenta.saldo.toLocaleString("es-AR")}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* 2. CUENTA DESTINO: Lista titulares exceptuando al logueado */}
