@@ -3,7 +3,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-function HistorialTransferencias() {
+function verMovimientos() {
   const [transferencias, setTransferencias] = useState([]);
   const [enviadas, setEnviadas] = useState([]);
   const [recibidas, setRecibidas] = useState([]);
@@ -169,4 +169,4 @@ function HistorialTransferencias() {
   );
 }
 
-export default HistorialTransferencias;
+export default verMovimientos;
