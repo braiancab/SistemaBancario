@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 
-function Transferencias() {
+function realizarTransferencia() {
   const navigate = useNavigate();
 
   // Estados
@@ -302,4 +302,4 @@ function Transferencias() {
   );
 }
 
-export default Transferencias;
+export default realizarTransferencia;
