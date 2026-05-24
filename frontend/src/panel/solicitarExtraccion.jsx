@@ -4,7 +4,7 @@ import { getCuentaByCliente } from "../servicio/cuentaServicio";
 import jsPDF from "jspdf";
 
 
-const SolicitarExtraccion = () => {
+const generarOrdenExtraccion = () => {
   const [monto, setMonto] = useState("");
   const [dni, setDni] = useState("");
   const [mensaje, setMensaje] = useState(null);
@@ -187,4 +187,4 @@ setCuentas(cuentasActualizadas.data);
   );
 };
 
-export default SolicitarExtraccion;
+export default generarOrdenExtraccion;
