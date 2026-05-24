@@ -65,7 +65,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         cuentarepositorio.save(cuenta);
 
         orden.setCuentaOrigen(cuenta);
-
+        orden.setCodigo(UUID.randomUUID().toString().substring(0,6));
         return ordenRepositorio.save(orden);
     }
   
