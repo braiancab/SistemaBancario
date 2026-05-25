@@ -61,6 +61,9 @@ export const BarraNavegacion = () => {
               <Link className="nav-link fw-medium text-light hover-white" to="/movimientos">Movimientos</Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link fw-medium text-light hover-white" to="/tarjetas">Tarjetas</Link>
+            </li>
+            <li className="nav-item">
               <Link
                 className={`nav-link fw-medium ${!tieneCuenta ? "text-white-50 opacity-50" : "text-light hover-white"}`}
                 to={tieneCuenta ? "/transferencias" : "#"}
