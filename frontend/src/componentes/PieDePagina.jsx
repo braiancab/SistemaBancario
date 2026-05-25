@@ -31,6 +31,7 @@ export const PieDePagina = () => {
                         <p><Link to="/crear-cuenta" className="text-decoration-none text-white-50 hover-white">Nueva Cuenta</Link></p>
                         <p><Link to="/transferencias" className="text-decoration-none text-white-50 hover-white">Transferir</Link></p>
                         <p><Link to="/movimientos" className="text-decoration-none text-white-50 hover-white">Movimientos</Link></p>
+                        <p><Link to="/tarjetas" className="text-decoration-none text-white-50 hover-white">Tarjetas</Link></p>
                         <p><Link to="/extraccion" className="text-decoration-none text-white-50 hover-white">Orden extraccion</Link></p>
                     </div>
 
