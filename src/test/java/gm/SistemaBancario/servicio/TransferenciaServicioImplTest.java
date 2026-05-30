@@ -91,4 +91,44 @@ class TransferenciaServicioImplTest {
         // Verificamos que finalmente se guardó el registro de la transferencia
         verify(transferenciaRepositorio, times(1)).save(any(Transferencia.class));
     }
+
+    @Test
+    void realizarTransferencia_SaldoInsuficiente_DeberiaLanzarRuntimeException() {
+        // ==========================================
+        // PASO 1: GIVEN (Origen con POCO dinero)
+        // ==========================================
+        Cuenta cuentaOrigen = new Cuenta();
+        cuentaOrigen.setIdCuenta(1L);
+        cuentaOrigen.setSaldo(new BigDecimal("100.00")); // Solo tiene $100
+
+        Cuenta cuentaDestino = new Cuenta();
+        cuentaDestino.setIdCuenta(2L);
+        cuentaDestino.setSaldo(new BigDecimal("1000.00"));
+
+        MotivoTransferencia motivo = new MotivoTransferencia();
+        motivo.setIdMotivo(9L);
+
+        // Mockeamos las búsquedas igual que antes
+        when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
+        when(cuentaRepositorio.findById(2L)).thenReturn(Optional.of(cuentaDestino));
+        when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
+
+        // ==========================================
+        // PASO 2 Y 3: WHEN y THEN (Esperamos el error)
+        // ==========================================
+        Float montoExcesivo = 500.0f; // Quiere transferir $500 pero solo tiene $100
+
+        // assertThrows verifica que al ejecutar el código se lance la excepción esperada
+        RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
+            transferenciaServicio.realizarTransferencia(1L, 2L, montoExcesivo, 9L);
+        });
+
+        // Verificamos que el mensaje del error sea exactamente el que escribiste en tu lógica
+        assertEquals("Saldo insuficiente", excepcion.getMessage());
+
+        // SUPER IMPORTANTE: Verificamos que NUNCA se haya llamado al método .save()
+        // Si el saldo es insuficiente, las cuentas no deben modificarse en la base de datos
+        verify(cuentaRepositorio, never()).save(any(Cuenta.class));
+        verify(transferenciaRepositorio, never()).save(any(Transferencia.class));
+    }
 }
