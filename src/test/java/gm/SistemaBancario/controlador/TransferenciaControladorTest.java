@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest // 1. Levanta el contexto de tu aplicación tal como está ahora
-@AutoConfigureMockMvc // 2. Nos da el Postman falso (MockMvc) listo para usar
+@SpringBootTest // Levanta el contexto de tu aplicación tal como está ahora
+@AutoConfigureMockMvc //  Nos da el Postman falso (MockMvc) listo para usar
 class TransferenciaControladorTest {
 
     @Autowired
@@ -31,7 +31,7 @@ class TransferenciaControladorTest {
     @MockitoBean
     private TransferenciaServicio transferenciaServicio; // Clon falso del servicio
 
-    private ObjectMapper objectMapper = new ObjectMapper(); // Convierte objetos Java a JSON (texto)
+    private final ObjectMapper objectMapper = new ObjectMapper(); // Convierte objetos Java a JSON (texto)
 
     @Test
     void realizarTransferencia_DeberiaRetornarHttp200YTransferencia() throws Exception {
