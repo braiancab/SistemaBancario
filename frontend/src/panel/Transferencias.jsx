@@ -178,7 +178,7 @@ if (Number(formData.monto) > cuentaOrigen.saldo) {
         <div className="col-md-8">
           <div className="card shadow border-0">
             <div className="card-header bg-success text-white">
-              <h4 className="mb-0">Transferencia a terceros</h4>
+              <h4 className="mb-0">Transferir</h4>
             </div>
 
             <div className="card-body">

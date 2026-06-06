@@ -30,7 +30,12 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
     public List<OrdenExtraccion> listarTodas() {
         return ordenRepositorio.findAll();
     }
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrdenExtraccion> historialOrdenExtraccion(String dni) {
 
+        return ordenRepositorio.findByDni(dni);
+    }
     @Override
     @Transactional(readOnly = true)
     public Optional<OrdenExtraccion> buscarPorId(Long id) {

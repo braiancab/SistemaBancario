@@ -14,4 +14,6 @@ public interface OrdenExtraccionRepositorio extends JpaRepository<OrdenExtraccio
 
     //
     List<OrdenExtraccion> findByCuentaOrigen_IdCuenta(Long idCuenta);
+
+    List<OrdenExtraccion> findByDni(String dni);
 }
