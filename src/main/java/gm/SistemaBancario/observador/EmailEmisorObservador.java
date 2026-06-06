@@ -15,6 +15,12 @@ public class EmailEmisorObservador implements ObservadorTransferencia {
     @Override
     public void actualizar(Transferencia transferencia) {
 
+
+        System.out.println(
+                "[OBSERVER EMISOR] Transferencia detectada. Monto: "
+                        + transferencia.getMonto()
+        );
+
         String email =
                 transferencia.getCuentaOrigen()
                         .getCliente()
