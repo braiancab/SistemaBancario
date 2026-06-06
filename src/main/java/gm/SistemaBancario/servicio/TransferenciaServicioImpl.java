@@ -5,9 +5,12 @@ import gm.SistemaBancario.dto.TransferenciaDTO;
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.modelo.MotivoTransferencia;
 import gm.SistemaBancario.modelo.Transferencia;
+import gm.SistemaBancario.observador.EmailEmisorObservador;
+import gm.SistemaBancario.observador.EmailReceptorObservador;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
 import gm.SistemaBancario.repositorio.MotivoTransferenciaRepositorio;
 import gm.SistemaBancario.repositorio.TransferenciaRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -32,6 +35,13 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         this.motivoRepositorio = motivoRepositorio;
     }
 
+    @Autowired
+    private EmailEmisorObservador emailEmisorObserver;
+
+    @Autowired
+    private EmailReceptorObservador emailReceptorObserver;
+
+
     public TransferenciaComprobanteDTO realizarTransferencia(TransferenciaDTO request) {
 
         Cuenta origen = cuentaRepositorio.findById(request.getCuentaOrigen()).orElseThrow();
@@ -47,7 +57,7 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         cuentaRepositorio.save(origen);
         cuentaRepositorio.save(destino);
 
-        // 🔥 crear comprobante
+        //  crear comprobante
         TransferenciaComprobanteDTO comprobante = new TransferenciaComprobanteDTO();
         comprobante.setCuentaOrigen(origen.getAlias()); // o nombre
         comprobante.setCuentaDestino(destino.getAlias());
@@ -58,8 +68,6 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
         return comprobante;
     }
-
-
 
 
     // TRANSFERENCIA
@@ -90,10 +98,9 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
         // 2. Comparar saldos: origen.getSaldo() < monto
         // compareTo devuelve: -1 (menor), 0 (igual), 1 (mayor)
-        if (origen.getSaldo().compareTo(montoBI)<0) {
-         throw new RuntimeException("Saldo insuficiente");
+        if (origen.getSaldo().compareTo(montoBI) < 0) {
+            throw new RuntimeException("Saldo insuficiente");
         }
-
 
 
         // 3. Actualizar saldos usando .subtract() y .add()
@@ -102,8 +109,6 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
         cuentaRepositorio.save(origen);
         cuentaRepositorio.save(destino);
-
-
 
 
         // 5. Registrar transferencia
@@ -115,7 +120,19 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         transferencia.setCuentaDestino(destino);
         transferencia.setMotivoTransferencia(motivo);
 
+
+        notificarObservadores(transferencia);
         return transferenciaRepositorio.save(transferencia);
+
+
+    }
+
+
+    private void notificarObservadores(Transferencia transferencia) {
+
+        emailEmisorObserver.actualizar(transferencia);
+
+        emailReceptorObserver.actualizar(transferencia);
     }
 
     //  Historial de una cuenta
