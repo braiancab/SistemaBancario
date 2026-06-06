@@ -215,7 +215,7 @@ if (Number(formData.monto) > cuentaOrigen.saldo) {
                   <label className="form-label fw-bold">
                     Cuenta Destino (Titular / Alias)
                   </label>
-                 <Select
+                    <Select
   options={opcionesDestino}
     
   placeholder="Buscar por Alias, CVU o Titular..."
@@ -227,6 +227,10 @@ if (Number(formData.monto) > cuentaOrigen.saldo) {
     })
   }
 />
+
+
+
+
                 </div>
 
                 <div className="mb-3">

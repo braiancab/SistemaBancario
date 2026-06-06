@@ -120,10 +120,11 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         transferencia.setCuentaDestino(destino);
         transferencia.setMotivoTransferencia(motivo);
 
+        transferenciaRepositorio.save(transferencia);
 
         notificarObservadores(transferencia);
-        return transferenciaRepositorio.save(transferencia);
 
+        return transferencia;
 
     }
 
