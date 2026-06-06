@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import jsPDF from "jspdf";
+import Select from "react-select";
 
 function realizarTransferencia() {
   const navigate = useNavigate();
@@ -19,6 +20,13 @@ function realizarTransferencia() {
   const cuentaOrigen = cuentasOrigen.find(
   (c) => c.idCuenta === Number(cuentaSeleccionada)
 );
+
+const opcionesDestino = cuentasDestino
+  .filter((c) => c.idCuenta !== cuentaOrigen?.idCuenta)
+  .map((cuenta) => ({
+    value: cuenta.idCuenta,
+    label: `${cuenta.cliente.nombre} ${cuenta.cliente.apellido} | Alias: ${cuenta.alias} | CVU: ${cuenta.cvu}`,
+  }));
 
   const [formData, setFormData] = useState({
     cuentaDestino: "",
@@ -207,23 +215,18 @@ if (Number(formData.monto) > cuentaOrigen.saldo) {
                   <label className="form-label fw-bold">
                     Cuenta Destino (Titular / Alias)
                   </label>
-                  <select
-                    className="form-select"
-                    name="cuentaDestino"
-                    value={formData.cuentaDestino}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Seleccione cuenta destino</option>
-                    {cuentasDestino
-                      .filter((c) => c.idCuenta !== cuentaOrigen?.idCuenta)
-                      .map((cuenta) => (
-                        <option key={cuenta.idCuenta} value={cuenta.idCuenta}>
-                          {cuenta.cliente.nombre} {cuenta.cliente.apellido} |
-                          Alias: {cuenta.alias}
-                        </option>
-                      ))}
-                  </select>
+                 <Select
+  options={opcionesDestino}
+    
+  placeholder="Buscar por Alias, CVU o Titular..."
+  isSearchable
+  onChange={(selectedOption) =>
+    setFormData({
+      ...formData,
+      cuentaDestino: selectedOption.value,
+    })
+  }
+/>
                 </div>
 
                 <div className="mb-3">
