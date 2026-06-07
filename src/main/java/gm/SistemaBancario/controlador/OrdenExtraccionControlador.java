@@ -1,36 +1,29 @@
-
 package gm.SistemaBancario.controlador;
 
 import gm.SistemaBancario.modelo.OrdenExtraccion;
 import gm.SistemaBancario.servicio.OrdenExtraccionServicio;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.net.URI;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/ordenes_extraccion")
 @CrossOrigin(origins = "*")
-
 public class OrdenExtraccionControlador {
 
     private final OrdenExtraccionServicio ordenServicio;
-
 
     public OrdenExtraccionControlador(OrdenExtraccionServicio ordenServicio) {
         this.ordenServicio = ordenServicio;
     }
 
-    // Listar todas las órdenes
     @GetMapping
     public List<OrdenExtraccion> listar() {
         return ordenServicio.listarTodas();
     }
 
-    // Buscar una orden por ID
     @GetMapping("/{id}")
     public ResponseEntity<OrdenExtraccion> obtenerPorId(@PathVariable Long id) {
         return ordenServicio.buscarPorId(id)
@@ -39,12 +32,10 @@ public class OrdenExtraccionControlador {
     }
 
     @PostMapping
-    public OrdenExtraccion crearOrden(
-            @RequestBody OrdenExtraccion orden) {
+    public OrdenExtraccion crearOrden(@RequestBody OrdenExtraccion orden) {
         return ordenServicio.crearOrden(orden);
     }
 
-    // Eliminar una orden
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> eliminar(@PathVariable Long id) {
         try {
@@ -55,9 +46,19 @@ public class OrdenExtraccionControlador {
         }
     }
 
-    // Buscar por código (ejemplo: /api/ordenes-extraccion/buscar?codigo=ABC123)
     @GetMapping("/buscar")
     public ResponseEntity<List<OrdenExtraccion>> buscarPorCodigo(@RequestParam String codigo) {
         return new ResponseEntity<>(ordenServicio.buscarPorCodigo(codigo), HttpStatus.OK);
+    }
+
+    // mapea el idCliente
+    @GetMapping("/historial/cliente/{idCliente}")
+    public ResponseEntity<List<OrdenExtraccion>> obtenerHistorialPorCliente(@PathVariable Long idCliente) {
+        List<OrdenExtraccion> historial = ordenServicio.historialOrdenExtraccion(idCliente);
+
+        if (historial.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content si no tiene extracciones
+        }
+        return new ResponseEntity<>(historial, HttpStatus.OK); // 200 OK con la lista
     }
 }

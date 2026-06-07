@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "cuentas",
         uniqueConstraints = @UniqueConstraint(columnNames = {"id_cliente", "tipo_cuenta"})
 )
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cuenta {
 
     @Id

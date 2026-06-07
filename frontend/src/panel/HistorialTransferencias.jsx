@@ -1,172 +1,136 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { MovimientoFactory } from "../componentes/movimientos/MovimientoFactory";
 
-function verMovimientos() {
-  const [transferencias, setTransferencias] = useState([]);
-  const [enviadas, setEnviadas] = useState([]);
-  const [recibidas, setRecibidas] = useState([]);
+function HistorialMovimientos() {
+  const [movimientos, setMovimientos] = useState([]);
 
+  // 1. Traemos TODAS las variables necesarias del localStorage
   const idCuenta = localStorage.getItem("idCuenta");
   const token = localStorage.getItem("token");
-
+  const idCliente = localStorage.getItem("idCliente"); // Agregado para las extracciones, ya que se buscan por cliente
   useEffect(() => {
-    if (!idCuenta || !token) return;
+    // Si falta algún dato de sesión, no hacemos las peticiones
+    // if (!idCuenta || !token || !idCliente) return;
+    
+    // 2. Petición de Transferencias
+    const peticionTransferencias = axios.get(
+      `http://localhost:8080/api/transferencias/cuenta/${idCuenta}`, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-    axios
-      .get(`http://localhost:8080/api/transferencias/cuenta/${idCuenta}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        setTransferencias(res.data);
+    // 3. Petición de Órdenes de Extracción 
+    const peticionExtracciones = axios.get(
+      `http://localhost:8080/api/ordenes_extraccion/historial/cliente/${idCliente}`, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-        // separar transferencias por idcuenta
-        const enviadas = res.data.filter(
-          (t) => t.cuentaOrigen.idCuenta === Number(idCuenta),
-        );
+    // 4. Promise.all para ejecutar en paralelo
+    Promise.all([peticionTransferencias, peticionExtracciones])
+      .then(([resTransferencias, resExtracciones]) => {
+        
+        let historialUnificado = [...resTransferencias.data, ...resExtracciones.data];
 
-        const recibidas = res.data.filter(
-          (t) => t.cuentaDestino.idCuenta === Number(idCuenta),
-        );
+        // Ordenamos cronológicamente (de más nuevo a más viejo)
+        historialUnificado.sort((a, b) => {
+          const fechaA = new Date(a.fecha || a.fechaCreacion || 0);
+          const fechaB = new Date(b.fecha || b.fechaCreacion || 0);
+          return fechaB - fechaA; 
+        });
 
-        setEnviadas(enviadas);
-        setRecibidas(recibidas);
+        setMovimientos(historialUnificado);
       })
       .catch((err) => {
-        console.error("Error al cargar transferencias:", err);
+        console.error("Error al cargar el historial unificado:", err);
       });
-  }, [idCuenta, token]);
 
-  const descargarPDFEnviadas = () => {
+  }, [idCuenta, token, idCliente]); // Agregamos idCliente a las dependencias
+
+  // 5. PDF Inteligente (Sabe distinguir entre Transferencia y Extracción)
+  const descargarPDFHistorial = () => {
     const doc = new jsPDF();
-
     doc.setFontSize(18);
-    doc.text("Historial de Transferencias Enviadas", 14, 20);
+    doc.text("Historial de Movimientos Unificado", 14, 20);
 
-    const filas = enviadas.map((t) => [
-      `${t.cuentaDestino.cliente.nombre} ${t.cuentaDestino.cliente.apellido}`,
-      `$${t.monto}`,
-      t.motivo?.motivo || "Sin motivo",
-      t.estado,
-    ]);
+    const filas = movimientos.map((mov) => {
+      // Si tiene monto_orden, es una Orden de Extracción
+      if (mov.monto_orden !== undefined) {
+        return [
+          "Extracción en Cajero",
+          `DNI Titular: ${mov.dni}`,
+          `-$${mov.monto_orden}`,
+          `Código: ${mov.codigo}`,
+          "GENERADA" // O mov.estado si las extracciones manejan estado
+        ];
+      } else {
+        // Si no, es una Transferencia
+        const esOrigen = parseInt(mov.cuentaOrigen?.idCuenta) === parseInt(idCuenta);
+        const tipo = esOrigen ? "Transferencia Enviada" : "Transferencia Recibida";
+        const contraparte = esOrigen
+          ? `${mov.cuentaDestino?.cliente?.nombre} ${mov.cuentaDestino?.cliente?.apellido}`
+          : `${mov.cuentaOrigen?.cliente?.nombre} ${mov.cuentaOrigen?.cliente?.apellido}`;
+        const montoSigno = esOrigen ? `-$${mov.monto}` : `+$${mov.monto}`;
+
+        return [
+          tipo,
+          contraparte,
+          montoSigno,
+          mov.motivo?.motivo || "Sin motivo",
+          mov.estado,
+        ];
+      }
+    });
 
     autoTable(doc, {
       startY: 30,
-      head: [["Destino", "Monto", "Motivo", "Estado"]],
+      head: [["Tipo", "Detalle", "Monto", "Motivo / Cód", "Estado"]],
       body: filas,
     });
 
-    doc.save("transferencias_enviadas.pdf");
-  };
-
-  const descargarPDFRecibidas = () => {
-    const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text("Historial de Transferencias Recibidas", 14, 20);
-
-    const filas = recibidas.map((t) => [
-      `${t.cuentaOrigen.cliente.nombre} ${t.cuentaOrigen.cliente.apellido}`,
-      `$${t.monto}`,
-      t.motivo?.motivo || "Sin motivo",
-      t.estado,
-    ]);
-
-    autoTable(doc, {
-      startY: 30,
-      head: [["Origen", "Monto", "Motivo", "Estado"]],
-      body: filas,
-    });
-
-    doc.save("transferencias_recibidas.pdf");
+    doc.save("historial_movimientos.pdf");
   };
 
   return (
     <div className="container mt-4">
-      <h2>Historial de Transferencias</h2>
+      <h2>Mi Historial de Movimientos</h2>
+      
+      <button
+        className="btn btn-dark mb-4"
+        onClick={descargarPDFHistorial}
+        disabled={movimientos.length === 0}
+      >
+        Descargar PDF del Historial Completo
+      </button>
 
-      {/*  ENVIADAS */}
-      <div className="mt-4">
-        <h4 className="text-danger">Transferencias Enviadas </h4>
-
-        {enviadas.length === 0 ? (
-          <p>No hay transferencias enviadas</p>
-        ) : (
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Destino</th>
-                <th>Monto</th>
-                <th>Motivo</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enviadas.map((t) => (
-                <tr key={t.idTransferencia}>
-                  <td>
-                    {t.cuentaDestino.cliente.nombre}{" "}
-                    {t.cuentaDestino.cliente.apellido}
-                  </td>
-                  <td>${t.monto}</td>
-                  <td>{t.motivo?.motivo}</td>
-                  <td>{t.estado}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <button
-          className="btn btn-danger mb-3"
-          onClick={descargarPDFEnviadas}
-          disabled={enviadas.length === 0}
-        >
-          Descargar PDF Enviadas
-        </button>
-      </div>
-
-      {/*  RECIBIDAS */}
-      <div className="mt-4">
-        <h4 className="text-success">Transferencias Recibidas</h4>
-
-        {recibidas.length === 0 ? (
-          <p>No hay transferencias recibidas</p>
-        ) : (
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Origen</th>
-                <th>Monto</th>
-                <th>Motivo</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recibidas.map((t) => (
-                <tr key={t.idTransferencia}>
-                  <td>
-                    {t.cuentaOrigen.cliente.nombre}{" "}
-                    {t.cuentaOrigen.cliente.apellido}
-                  </td>
-                  <td>${t.monto}</td>
-                  <td>{t.motivo?.motivo}</td>
-                  <td>{t.estado}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <button
-          className="btn btn-success mb-3"
-          onClick={descargarPDFRecibidas}
-          disabled={recibidas.length === 0}
-        >
-          Descargar PDF Recibidas
-        </button>
-      </div>
+      {movimientos.length === 0 ? (
+        <p>No hay movimientos registrados.</p>
+      ) : (
+        <table className="table table-hover border">
+          <thead className="table-dark">
+            <tr>
+              <th>Tipo de Operación</th>
+              <th>Detalle</th>
+              <th>Monto</th>
+              <th>Fecha / Cód</th>
+            </tr>
+          </thead>
+          <tbody>
+            {movimientos.map((mov, index) => (
+              /* 🔥 Patrón Factory en acción 🔥 
+                 Como key, usamos idTransferencia, o id_extraccion, o el index de respaldo */
+              <MovimientoFactory
+                key={mov.idTransferencia || mov.id_extraccion || index} 
+                movimiento={mov}
+                idCuentaActiva={idCuenta}
+              />
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
 
-export default verMovimientos;
+export default HistorialMovimientos;

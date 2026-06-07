@@ -9,7 +9,7 @@ public interface OrdenExtraccionServicio {
     List<OrdenExtraccion> listarTodas();
      OrdenExtraccion crearOrden(OrdenExtraccion orden);
     Optional<OrdenExtraccion> buscarPorId(Long id);
-    List<OrdenExtraccion> historialOrdenExtraccion(String dni);
+    List<OrdenExtraccion> historialOrdenExtraccion(Long idCliente);
     //OrdenExtraccion guardar(OrdenExtraccion orden);
     void eliminar(Long id);
     List<OrdenExtraccion> buscarPorCodigo(String codigo);

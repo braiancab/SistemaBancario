@@ -33,6 +33,9 @@ function Login() {
       localStorage.setItem('token', respuesta.data.token); 
       //  Guardamos id del cliente
       localStorage.setItem("idCliente", respuesta.data.idCliente);
+      
+      //  Guardamos el id de la cuenta para futuras consultas (movimientos, transferencias, etc)
+      localStorage.setItem("idCuenta", respuesta.data.idCuenta);
       // Le avisamos al cliente
       alert("¡Inicio de sesión exitoso!");
 

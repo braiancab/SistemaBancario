@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
-
+import com.fasterxml.jackson.annotation.JsonIgnore; //
 @Entity
 @Table(name = "Orden_extraccion")
 public class OrdenExtraccion {
@@ -23,6 +23,7 @@ public class OrdenExtraccion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cuenta_origen")
+    @JsonIgnore
     private Cuenta cuentaOrigen;
 
     // --- Constructores ---
