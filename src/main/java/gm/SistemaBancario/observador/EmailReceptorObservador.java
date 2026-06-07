@@ -16,7 +16,7 @@ public class EmailReceptorObservador implements ObservadorTransferencia {
 
 
         System.out.println(
-                "[OBSERVER EMISOR] Transferencia detectada. Monto: "
+                "[OBSERVER RECEPTOR] Transferencia detectada. Monto: "
                         + transferencia.getMonto()
         );
         String email =

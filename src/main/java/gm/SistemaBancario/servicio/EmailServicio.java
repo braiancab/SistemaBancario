@@ -17,11 +17,21 @@ public class EmailServicio {
             String mensaje) {
 
         SimpleMailMessage email = new SimpleMailMessage();
-
+        email.setFrom("braiancabral618@gmail.com");
         email.setTo(destinatario);
         email.setSubject(asunto);
         email.setText(mensaje);
 
-        mailSender.send(email);
+        try {
+
+            mailSender.send(email);
+
+            System.out.println("Correo enviado correctamente");
+
+        } catch (Exception e) {
+
+            System.out.println("ERROR AL ENVIAR CORREO");
+            e.printStackTrace();
+        }
     }
 }
