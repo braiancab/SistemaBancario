@@ -57,7 +57,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
 
     @Override
     @Transactional
-    public OrdenExtraccion crearOrden(OrdenExtraccion orden) {
+    public OrdenExtraccion crearOrdenExtraccion(OrdenExtraccion orden) {
         Cuenta cuenta = cuentarepositorio.findById(
                 orden.getCuentaOrigen().getIdCuenta()
         ).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));

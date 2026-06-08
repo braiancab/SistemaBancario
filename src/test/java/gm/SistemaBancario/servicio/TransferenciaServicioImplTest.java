@@ -42,7 +42,7 @@ class TransferenciaServicioImplTest {
         // PASO 1: GIVEN (Preparar los datos simulados)
         // ==========================================
 
-        // Creamos las cuentas con saldos usando BigDecimal (como tenés en tu modelo)
+        // Creamos las cuentas con saldos usando BigDecimal
         Cuenta cuentaOrigen = new Cuenta();
         cuentaOrigen.setIdCuenta(1L);
         cuentaOrigen.setSaldo(new BigDecimal("5000.00")); // Arranca con 5000

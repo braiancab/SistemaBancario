@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface OrdenExtraccionServicio {
     List<OrdenExtraccion> listarTodas();
-     OrdenExtraccion crearOrden(OrdenExtraccion orden);
+     OrdenExtraccion crearOrdenExtraccion(OrdenExtraccion orden);
     Optional<OrdenExtraccion> buscarPorId(Long id);
     List<OrdenExtraccion> historialOrdenExtraccion(Long idCliente);
     //OrdenExtraccion guardar(OrdenExtraccion orden);

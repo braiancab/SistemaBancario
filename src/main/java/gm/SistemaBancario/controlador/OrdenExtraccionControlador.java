@@ -32,8 +32,8 @@ public class OrdenExtraccionControlador {
     }
 
     @PostMapping
-    public OrdenExtraccion crearOrden(@RequestBody OrdenExtraccion orden) {
-        return ordenServicio.crearOrden(orden);
+    public OrdenExtraccion crearOrdenExtraccion(@RequestBody OrdenExtraccion orden) {
+        return ordenServicio.crearOrdenExtraccion(orden);
     }
 
     @DeleteMapping("/{id}")
