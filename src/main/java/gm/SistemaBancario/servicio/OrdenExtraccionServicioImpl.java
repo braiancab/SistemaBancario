@@ -2,10 +2,10 @@ package gm.SistemaBancario.servicio;
 
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.modelo.OrdenExtraccion;
-import gm.SistemaBancario.modelo.Cliente; // 🔥 Importante agregar esto
+import gm.SistemaBancario.modelo.Cliente;
 import gm.SistemaBancario.repositorio.OrdenExtraccionRepositorio;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
-import gm.SistemaBancario.repositorio.ClienteRepositorio; // 🔥 Importante agregar esto
+import gm.SistemaBancario.repositorio.ClienteRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +20,9 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
 
     private final OrdenExtraccionRepositorio ordenRepositorio;
     private final CuentaRepositorio cuentarepositorio;
-    private final ClienteRepositorio clienteRepositorio; // 🔥 Agregado
+    private final ClienteRepositorio clienteRepositorio;
 
-    // 🔥 Constructor actualizado
+    // Constructor
     public OrdenExtraccionServicioImpl(OrdenExtraccionRepositorio ordenRepositorio,
                                        CuentaRepositorio cuentarepositorio,
                                        ClienteRepositorio clienteRepositorio) {
@@ -37,7 +37,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         return ordenRepositorio.findAll();
     }
 
-    // 🔥 MÉTODO MODIFICADO PARA RECIBIR idCliente Y BUSCAR EL DNI
+
     @Override
     @Transactional(readOnly = true)
     public List<OrdenExtraccion> historialOrdenExtraccion(Long idCliente) {
