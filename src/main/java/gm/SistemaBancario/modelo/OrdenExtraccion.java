@@ -2,9 +2,8 @@ package gm.SistemaBancario.modelo;
 
 import jakarta.persistence.*;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
-import com.fasterxml.jackson.annotation.JsonIgnore; //
 @Entity
 @Table(name = "Orden_extraccion")
 public class OrdenExtraccion {
@@ -23,7 +22,7 @@ public class OrdenExtraccion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cuenta_origen")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Cuenta cuentaOrigen;
 
     // --- Constructores ---
