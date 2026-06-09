@@ -7,65 +7,91 @@ import { MovimientoFactory } from "../componentes/movimientos/MovimientoFactory"
 function HistorialMovimientos() {
   const [movimientos, setMovimientos] = useState([]);
 
-  // 1. Traemos TODAS las variables necesarias del localStorage
   const idCuenta = localStorage.getItem("idCuenta");
   const token = localStorage.getItem("token");
-  const idCliente = localStorage.getItem("idCliente"); // Agregado para las extracciones, ya que se buscan por cliente
-  useEffect(() => {
-    // Si falta algún dato de sesión, no hacemos las peticiones
-    // if (!idCuenta || !token || !idCliente) return;
-    
-    // 2. Petición de Transferencias
+  const idCliente = localStorage.getItem("idCliente");
+
+  // ==========================================
+  // MÉTODOS DEL DIAGRAMA UML
+  // ==========================================
+
+  // Método 1: peticionApi() -> Encargado exclusivo de traer los datos
+  const peticionApi = () => {
     const peticionTransferencias = axios.get(
       `http://localhost:8080/api/transferencias/cuenta/${idCuenta}`, 
       { headers: { Authorization: `Bearer ${token}` } }
     );
-
-    // 3. Petición de Órdenes de Extracción 
     const peticionExtracciones = axios.get(
       `http://localhost:8080/api/ordenes_extraccion/historial/cliente/${idCliente}`, 
       { headers: { Authorization: `Bearer ${token}` } }
     );
+    
+    // Retorna la promesa combinada
+    return Promise.all([peticionTransferencias, peticionExtracciones]);
+  };
 
-    // 4. Promise.all para ejecutar en paralelo
-    Promise.all([peticionTransferencias, peticionExtracciones])
+  // Método 2: unificarDatos() -> Encargado de juntar los arreglos
+  const unificarDatos = (resTransferencias, resExtracciones) => {
+    return [...resTransferencias.data, ...resExtracciones.data];
+  };
+
+  // Método 3: ordenarHistorial() -> Encargado de la lógica de fechas
+  const ordenarHistorial = (historialDesordenado) => {
+    return historialDesordenado.sort((a, b) => {
+      const fechaA = new Date(a.fecha || a.fechaCreacion || 0);
+      const fechaB = new Date(b.fecha || b.fechaCreacion || 0);
+      return fechaB - fechaA; 
+    });
+  };
+
+  // Método 4: crearProductos() -> El Creador delegando a la Fábrica
+  const crearProductos = () => {
+    return movimientos.map((mov, index) => (
+      <MovimientoFactory
+        key={mov.idTransferencia || mov.id_extraccion || index} 
+        movimiento={mov}
+        idCuentaActiva={idCuenta}
+      />
+    ));
+  };
+
+  // ==========================================
+  // ORQUESTADOR Y RENDERIZADO
+  // ==========================================
+
+  useEffect(() => {
+    if (!idCuenta || !token || !idCliente) return;
+
+    
+    peticionApi()
       .then(([resTransferencias, resExtracciones]) => {
+        const historialUnificado = unificarDatos(resTransferencias, resExtracciones);
+        const historialOrdenado = ordenarHistorial(historialUnificado);
         
-        let historialUnificado = [...resTransferencias.data, ...resExtracciones.data];
-
-        // Ordenamos cronológicamente (de más nuevo a más viejo)
-        historialUnificado.sort((a, b) => {
-          const fechaA = new Date(a.fecha || a.fechaCreacion || 0);
-          const fechaB = new Date(b.fecha || b.fechaCreacion || 0);
-          return fechaB - fechaA; 
-        });
-
-        setMovimientos(historialUnificado);
+        setMovimientos(historialOrdenado);
       })
       .catch((err) => {
-        console.error("Error al cargar el historial unificado:", err);
+        console.error("Error al cargar el historial:", err);
       });
 
-  }, [idCuenta, token, idCliente]); // Agregamos idCliente a las dependencias
+  }, [idCuenta, token, idCliente]);
 
-  // 5. PDF Inteligente (Sabe distinguir entre Transferencia y Extracción)
+  
   const descargarPDFHistorial = () => {
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text("Historial de Movimientos Unificado", 14, 20);
 
     const filas = movimientos.map((mov) => {
-      // Si tiene monto_orden, es una Orden de Extracción
       if (mov.monto_orden !== undefined) {
         return [
           "Extracción en Cajero",
           `DNI Titular: ${mov.dni}`,
           `-$${mov.monto_orden}`,
           `Código: ${mov.codigo}`,
-          "GENERADA" // O mov.estado si las extracciones manejan estado
+          "GENERADA"
         ];
       } else {
-        // Si no, es una Transferencia
         const esOrigen = parseInt(mov.cuentaOrigen?.idCuenta) === parseInt(idCuenta);
         const tipo = esOrigen ? "Transferencia Enviada" : "Transferencia Recibida";
         const contraparte = esOrigen
@@ -73,13 +99,7 @@ function HistorialMovimientos() {
           : `${mov.cuentaOrigen?.cliente?.nombre} ${mov.cuentaOrigen?.cliente?.apellido}`;
         const montoSigno = esOrigen ? `-$${mov.monto}` : `+$${mov.monto}`;
 
-        return [
-          tipo,
-          contraparte,
-          montoSigno,
-          mov.motivo?.motivo || "Sin motivo",
-          mov.estado,
-        ];
+        return [ tipo, contraparte, montoSigno, mov.motivo?.motivo || "Sin motivo", mov.estado ];
       }
     });
 
@@ -117,15 +137,8 @@ function HistorialMovimientos() {
             </tr>
           </thead>
           <tbody>
-            {movimientos.map((mov, index) => (
-              /*
-                 Como key, usamos idTransferencia, o id_extraccion, o el index de respaldo */
-              <MovimientoFactory
-                key={mov.idTransferencia || mov.id_extraccion || index} 
-                movimiento={mov}
-                idCuentaActiva={idCuenta}
-              />
-            ))}
+            {/* Llamamos al método que delega la creación a la Fábrica */}
+            {crearProductos()}
           </tbody>
         </table>
       )}
