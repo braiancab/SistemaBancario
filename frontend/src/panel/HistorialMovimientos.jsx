@@ -118,7 +118,7 @@ function HistorialMovimientos() {
           </thead>
           <tbody>
             {movimientos.map((mov, index) => (
-              /* 🔥 Patrón Factory en acción 🔥 
+              /*
                  Como key, usamos idTransferencia, o id_extraccion, o el index de respaldo */
               <MovimientoFactory
                 key={mov.idTransferencia || mov.id_extraccion || index} 

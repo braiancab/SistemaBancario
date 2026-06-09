@@ -5,7 +5,7 @@ import  Dashboard  from "./panel/Dashboard";
 import  Transferencias  from "./panel/Transferencias";
 import  CrearCuenta  from "./panel/CrearCuenta";
 import  BarraNavegacion  from "./componentes/BarraNavegacion";
-import HistorialTransferencias from "./panel/HistorialTransferencias";
+import HistorialMovimientos from "./panel/HistorialMovimientos";
 import PieDePagina from "./componentes/PieDePagina";
 import SolicitarExtraccion from "./panel/SolicitarExtraccion";
 import Tarjetas from "./panel/Tarjetas";
@@ -40,7 +40,7 @@ function App() {
             />
             <Route 
               path="/movimientos" 
-              element={estaAutenticado() ? <><BarraNavegacion /><HistorialTransferencias /><PieDePagina /></> : <Navigate to="/login" />} 
+              element={estaAutenticado() ? <><BarraNavegacion /><HistorialMovimientos /><PieDePagina /></> : <Navigate to="/login" />} 
             />
 
             <Route path="/extraccion" 
