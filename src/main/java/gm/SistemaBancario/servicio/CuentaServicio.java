@@ -7,6 +7,8 @@ public interface CuentaServicio {
 
     Cuenta crearCuenta(Long idCliente, Long idTipo, Long idEstado);
 
+     void desactivarCuenta(Long idCuenta, String password);
+
     List<Cuenta> obtenerCuentasPorCliente(Long idCliente);
 
     Cuenta buscarPorNumeroCuenta(String numeroCuenta);

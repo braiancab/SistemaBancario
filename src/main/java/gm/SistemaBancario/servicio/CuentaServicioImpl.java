@@ -8,6 +8,7 @@ import gm.SistemaBancario.repositorio.ClienteRepositorio;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
 import gm.SistemaBancario.repositorio.TipoCuentaRepositorio;
 import gm.SistemaBancario.repositorio.EstadoCuentaRepositorio;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +25,18 @@ public class CuentaServicioImpl implements CuentaServicio {
     private final ClienteRepositorio clienteRepositorio;
     private final TipoCuentaRepositorio tipoCuentaRepositorio;
     private final EstadoCuentaRepositorio estadoCuentaRepositorio;
+    private final PasswordEncoder passwordEncoder;
 
     public CuentaServicioImpl(CuentaRepositorio cuentaRepositorio,
                               ClienteRepositorio clienteRepositorio,
                               TipoCuentaRepositorio tipoCuentaRepositorio,
-                              EstadoCuentaRepositorio estadoCuentaRepositorio) {
+                              EstadoCuentaRepositorio estadoCuentaRepositorio,
+                              PasswordEncoder passwordEncoder) {
         this.cuentaRepositorio = cuentaRepositorio;
         this.clienteRepositorio = clienteRepositorio;
         this.tipoCuentaRepositorio = tipoCuentaRepositorio;
         this.estadoCuentaRepositorio = estadoCuentaRepositorio;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ✅ Crear cuenta
@@ -81,7 +85,7 @@ public class CuentaServicioImpl implements CuentaServicio {
                 palabras[random.nextInt(palabras.length)];
     }
 
-    // ✅ Obtener cuentas de un cliente
+    // Obtener cuentas de un cliente
     @Override
     @Transactional(readOnly = true)
     public List<Cuenta> obtenerCuentasPorCliente(Long idCliente) {
@@ -95,11 +99,44 @@ public class CuentaServicioImpl implements CuentaServicio {
     }
 
 
-    // ✅ Buscar cuenta
+    // Buscar cuenta
     @Override
     @Transactional(readOnly = true)
     public Cuenta buscarPorNumeroCuenta(String alias) {
         return cuentaRepositorio.findByAlias(alias)
                 .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
     }
+
+    @Override
+    public void desactivarCuenta(Long idCuenta, String password) {
+
+        Cuenta cuenta = cuentaRepositorio.findById(idCuenta)
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        // Validar saldo
+        if (cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0) {
+            throw new RuntimeException(
+                    "La cuenta posee saldo disponible"
+            );
+        }
+
+        Cliente cliente = cuenta.getCliente();
+
+        // Validar contraseña
+        if (!passwordEncoder.matches(
+                password,
+                cliente.getContrasena())) {
+
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        EstadoCuenta estadoInactivo = estadoCuentaRepositorio
+                .findByEstado("inactivo")
+                .orElseThrow(() -> new RuntimeException("Estado INACTIVO inexistente"));
+
+        cuenta.setEstadoCuenta(estadoInactivo);
+
+        cuentaRepositorio.save(cuenta);
+    }
+
 }

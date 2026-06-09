@@ -58,6 +58,11 @@ public class Cuenta {
     @JsonIgnore
     private List<Transferencia> transferenciasRecibidas;
 
+
+
+
+
+
     // --- Constructores ---
     public Cuenta() {}
 
@@ -115,4 +120,5 @@ public class Cuenta {
                 ", tipoCuenta='" + tipoCuenta + '\'' +
                 '}';
     }
+
 }

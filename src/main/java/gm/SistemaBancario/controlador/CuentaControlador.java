@@ -1,7 +1,10 @@
 package gm.SistemaBancario.controlador;
 import java.util.Map;
+
+import gm.SistemaBancario.dto.DesactivarCuentaDto;
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.servicio.CuentaServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +48,17 @@ public class CuentaControlador {
     @GetMapping("/destino/{idCliente}")
     public List<Cuenta> obtenerCuentasDestino(@PathVariable Long idCliente) {
         return cuentaServicio.obtenerCuentasDestino(idCliente);
+    }
+
+
+    @PutMapping("/{idCuenta}/desactivar")
+    public ResponseEntity<?> desactivarCuenta(
+            @PathVariable Long idCuenta,
+            @RequestBody DesactivarCuentaDto dto) {
+
+        cuentaServicio.desactivarCuenta(idCuenta, dto.getPassword());
+
+        return ResponseEntity.ok("Cuenta desactivada correctamente");
     }
 
 }
