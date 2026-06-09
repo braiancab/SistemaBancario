@@ -3,6 +3,8 @@ package gm.SistemaBancario.servicio;
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.modelo.MotivoTransferencia;
 import gm.SistemaBancario.modelo.Transferencia;
+import gm.SistemaBancario.observador.EmailEmisorObservador;
+import gm.SistemaBancario.observador.EmailReceptorObservador;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
 import gm.SistemaBancario.repositorio.MotivoTransferenciaRepositorio;
 import gm.SistemaBancario.repositorio.TransferenciaRepositorio;
@@ -19,10 +21,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class) // 1. Le dice a JUnit que use Mockito
+@ExtendWith(MockitoExtension.class)
 class TransferenciaServicioImplTest {
 
-    // 2. Creamos los mocks (simuladores) de los repositorios que usa tu servicio
     @Mock
     private CuentaRepositorio cuentaRepositorio;
 
@@ -32,7 +33,13 @@ class TransferenciaServicioImplTest {
     @Mock
     private TransferenciaRepositorio transferenciaRepositorio;
 
-    // 3. Mockito crea la implementación del servicio e inyecta los mocks de arriba adentro
+    // Agregamos los Mocks de los observadores
+    @Mock
+    private EmailEmisorObservador emailEmisorObserver;
+
+    @Mock
+    private EmailReceptorObservador emailReceptorObserver;
+
     @InjectMocks
     private TransferenciaServicioImpl transferenciaServicio;
 
@@ -41,55 +48,46 @@ class TransferenciaServicioImplTest {
         // ==========================================
         // PASO 1: GIVEN (Preparar los datos simulados)
         // ==========================================
-
-        // Creamos las cuentas con saldos usando BigDecimal
         Cuenta cuentaOrigen = new Cuenta();
         cuentaOrigen.setIdCuenta(1L);
-        cuentaOrigen.setSaldo(new BigDecimal("5000.00")); // Arranca con 5000
+        cuentaOrigen.setSaldo(new BigDecimal("5000.00"));
 
         Cuenta cuentaDestino = new Cuenta();
         cuentaDestino.setIdCuenta(2L);
-        cuentaDestino.setSaldo(new BigDecimal("1000.00")); // Arranca con 1000
+        cuentaDestino.setSaldo(new BigDecimal("1000.00"));
 
         MotivoTransferencia motivo = new MotivoTransferencia();
         motivo.setIdMotivo(9L);
 
-        // Configuramos la mente de los Mocks (qué responder cuando el servicio los llame)
         when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
         when(cuentaRepositorio.findById(2L)).thenReturn(Optional.of(cuentaDestino));
         when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
 
-        // Para el guardado de la transferencia, le decimos que devuelva el mismo objeto que recibe
         when(transferenciaRepositorio.save(any(Transferencia.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // ==========================================
         // PASO 2: WHEN (Ejecutar la lógica real)
         // ==========================================
-
         Float montoATransferir = 2000.0f;
         Transferencia resultado = transferenciaServicio.realizarTransferencia(1L, 2L, montoATransferir, 9L);
 
         // ==========================================
         // PASO 3: THEN (Verificar que todo salió bien)
         // ==========================================
-
-        // Verificamos que el objeto transferencia no sea nulo y tenga los datos correctos
         assertNotNull(resultado);
         assertEquals("COMPLETADA", resultado.getEstado());
         assertEquals(montoATransferir, resultado.getMonto());
 
-        // Verificamos matemáticamente que los BigDecimals se hayan actualizado correctamente
-        // 5000 - 2000 = 3000
         assertEquals(new BigDecimal("3000.00"), cuentaOrigen.getSaldo());
-        // 1000 + 2000 = 3000
         assertEquals(new BigDecimal("3000.00"), cuentaDestino.getSaldo());
 
-        // Verificamos que se haya llamado al método .save() para impactar los cambios en las cuentas
         verify(cuentaRepositorio, times(1)).save(cuentaOrigen);
         verify(cuentaRepositorio, times(1)).save(cuentaDestino);
-
-        // Verificamos que finalmente se guardó el registro de la transferencia
         verify(transferenciaRepositorio, times(1)).save(any(Transferencia.class));
+
+        // Verificamos que se haya notificado a ambos observadores
+        verify(emailEmisorObserver, times(1)).actualizar(any(Transferencia.class));
+        verify(emailReceptorObserver, times(1)).actualizar(any(Transferencia.class));
     }
 
     @Test
@@ -99,7 +97,7 @@ class TransferenciaServicioImplTest {
         // ==========================================
         Cuenta cuentaOrigen = new Cuenta();
         cuentaOrigen.setIdCuenta(1L);
-        cuentaOrigen.setSaldo(new BigDecimal("100.00")); // Solo tiene $100
+        cuentaOrigen.setSaldo(new BigDecimal("100.00"));
 
         Cuenta cuentaDestino = new Cuenta();
         cuentaDestino.setIdCuenta(2L);
@@ -108,7 +106,6 @@ class TransferenciaServicioImplTest {
         MotivoTransferencia motivo = new MotivoTransferencia();
         motivo.setIdMotivo(9L);
 
-        // Mockeamos las búsquedas igual que antes
         when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
         when(cuentaRepositorio.findById(2L)).thenReturn(Optional.of(cuentaDestino));
         when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
@@ -116,19 +113,19 @@ class TransferenciaServicioImplTest {
         // ==========================================
         // PASO 2 Y 3: WHEN y THEN (Esperamos el error)
         // ==========================================
-        Float montoExcesivo = 500.0f; // Quiere transferir $500 pero solo tiene $100
+        Float montoExcesivo = 500.0f;
 
-        // assertThrows verifica que al ejecutar el código se lance la excepción esperada
         RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
             transferenciaServicio.realizarTransferencia(1L, 2L, montoExcesivo, 9L);
         });
 
-        // Verificamos que el mensaje del error sea exactamente el que escribiste en tu lógica
         assertEquals("Saldo insuficiente", excepcion.getMessage());
 
-        // SUPER IMPORTANTE: Verificamos que NUNCA se haya llamado al método .save()
-        // Si el saldo es insuficiente, las cuentas no deben modificarse en la base de datos
         verify(cuentaRepositorio, never()).save(any(Cuenta.class));
         verify(transferenciaRepositorio, never()).save(any(Transferencia.class));
+
+        //  Si falla por saldo, NO se debe mandar ningún email
+        verify(emailEmisorObserver, never()).actualizar(any());
+        verify(emailReceptorObserver, never()).actualizar(any());
     }
 }
