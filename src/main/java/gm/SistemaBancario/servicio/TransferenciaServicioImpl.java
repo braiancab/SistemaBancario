@@ -27,19 +27,21 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
     private final TransferenciaRepositorio transferenciaRepositorio;
     private final MotivoTransferenciaRepositorio motivoRepositorio;
 
+    private final EmailEmisorObservador emailEmisorObserver;
+    private final EmailReceptorObservador emailReceptorObserver;
+
     public TransferenciaServicioImpl(CuentaRepositorio cuentaRepositorio,
                                      TransferenciaRepositorio transferenciaRepositorio,
-                                     MotivoTransferenciaRepositorio motivoRepositorio) {
+                                     MotivoTransferenciaRepositorio motivoRepositorio,
+                                     EmailEmisorObservador emailEmisorObserver,
+                                     EmailReceptorObservador emailReceptorObserver) {
         this.cuentaRepositorio = cuentaRepositorio;
         this.transferenciaRepositorio = transferenciaRepositorio;
         this.motivoRepositorio = motivoRepositorio;
+        this.emailEmisorObserver = emailEmisorObserver;
+        this.emailReceptorObserver = emailReceptorObserver;
     }
 
-    @Autowired
-    private EmailEmisorObservador emailEmisorObserver;
-
-    @Autowired
-    private EmailReceptorObservador emailReceptorObserver;
 
 
     public TransferenciaComprobanteDTO realizarTransferencia(TransferenciaDTO request) {
