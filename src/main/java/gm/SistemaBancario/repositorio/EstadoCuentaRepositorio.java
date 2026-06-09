@@ -11,5 +11,6 @@ public interface EstadoCuentaRepositorio extends JpaRepository<EstadoCuenta, Lon
 
     Optional<EstadoCuenta> findByEstado(String estado);
 
+
     Optional<EstadoCuenta> findById(Long idEstado);
 }

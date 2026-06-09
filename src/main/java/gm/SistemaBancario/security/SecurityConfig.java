@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/clientes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cuentas").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/motivo_transferencia").permitAll()
-
+                        .requestMatchers(HttpMethod.PUT, "/api/cuentas/*/desactivar").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/clientes/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cuentas/**").permitAll()
 

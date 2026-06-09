@@ -1,6 +1,7 @@
 package gm.SistemaBancario.repositorio;
 
 import gm.SistemaBancario.modelo.Cuenta;
+import gm.SistemaBancario.modelo.EstadoCuenta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,10 @@ public interface CuentaRepositorio extends JpaRepository<Cuenta, Long> {
 
     // Obtener cuentas de un cliente
     List<Cuenta> findByClienteIdCliente(Long idCliente);
+
+
+
+
 
     //Buscar cuentas de destino
     @Query("SELECT c FROM Cuenta c WHERE c.cliente.idCliente <> :idCliente")
