@@ -48,7 +48,7 @@ const generarOrdenExtraccion = () => {
       return;
     }
 
-    if (dni.length < 7) {
+    if (dni.length !== 8 ) {
       setMensaje({ tipo: "danger", texto: "DNI inválido." });
       return;
     }
