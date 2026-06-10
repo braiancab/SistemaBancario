@@ -87,7 +87,7 @@ class TransferenciaServicioImplTest {
         verify(cuentaRepositorio, times(1)).save(cuentaDestino);
         verify(transferenciaRepositorio, times(1)).save(any(Transferencia.class));
 
-        // Verificamos que se haya notificado a ambos observadores
+        // Verificar que se haya notificado a ambos observadores
         verify(emailEmisorObserver, times(1)).actualizar(any(Transferencia.class));
         verify(emailReceptorObserver, times(1)).actualizar(any(Transferencia.class));
     }
@@ -95,7 +95,7 @@ class TransferenciaServicioImplTest {
     @Test
     void realizarTransferencia_SaldoInsuficiente_DeberiaLanzarRuntimeException() {
         // ==========================================
-        // PASO 1: GIVEN (Origen con POCO dinero)
+        // PASO 1: GIVEN origen con poco saldo
         // ==========================================
         Cuenta cuentaOrigen = new Cuenta();
         cuentaOrigen.setIdCuenta(1L);
@@ -113,7 +113,7 @@ class TransferenciaServicioImplTest {
         when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
 
         // ==========================================
-        // PASO 2 Y 3: WHEN y THEN (Esperamos el error)
+        // PASO 2 Y 3: WHEN y THEN Se espera el error
         // ==========================================
         Float montoExcesivo = 500.0f;
 
