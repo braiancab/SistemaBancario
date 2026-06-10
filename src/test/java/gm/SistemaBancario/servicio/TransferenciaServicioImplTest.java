@@ -49,27 +49,27 @@ class TransferenciaServicioImplTest {
         // PASO 1: GIVEN (Preparar los datos simulados)
         // ==========================================
         Cuenta cuentaOrigen = new Cuenta();
-        cuentaOrigen.setIdCuenta(1L);
-        cuentaOrigen.setSaldo(new BigDecimal("5000.00"));
+        cuentaOrigen.setIdCuenta(21L);
+        cuentaOrigen.setSaldo(new BigDecimal("500.00"));
 
         Cuenta cuentaDestino = new Cuenta();
-        cuentaDestino.setIdCuenta(2L);
+        cuentaDestino.setIdCuenta(1L);
         cuentaDestino.setSaldo(new BigDecimal("1000.00"));
 
         MotivoTransferencia motivo = new MotivoTransferencia();
-        motivo.setIdMotivo(9L);
+        motivo.setIdMotivo(2L);
 
-        when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
-        when(cuentaRepositorio.findById(2L)).thenReturn(Optional.of(cuentaDestino));
-        when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
+        when(cuentaRepositorio.findById(21L)).thenReturn(Optional.of(cuentaOrigen));
+        when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaDestino));
+        when(motivoRepositorio.findById(2L)).thenReturn(Optional.of(motivo));
 
         when(transferenciaRepositorio.save(any(Transferencia.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // ==========================================
         // PASO 2: WHEN (Ejecutar la lógica real)
         // ==========================================
-        Float montoATransferir = 2000.0f;
-        Transferencia resultado = transferenciaServicio.realizarTransferencia(1L, 2L, montoATransferir, 9L);
+        Float montoATransferir = 100.0f;
+        Transferencia resultado = transferenciaServicio.realizarTransferencia(21L, 1L, montoATransferir, 2L);
 
         // ==========================================
         // PASO 3: THEN (Verificar que todo salió bien)
@@ -78,8 +78,10 @@ class TransferenciaServicioImplTest {
         assertEquals("COMPLETADA", resultado.getEstado());
         assertEquals(montoATransferir, resultado.getMonto());
 
-        assertEquals(new BigDecimal("3000.00"), cuentaOrigen.getSaldo());
-        assertEquals(new BigDecimal("3000.00"), cuentaDestino.getSaldo());
+        //origen : 500 - 100 = 400
+        //destino : 1000 + 100 = 1100
+        assertEquals(new BigDecimal("400.00"), cuentaOrigen.getSaldo());
+        assertEquals(new BigDecimal("1100.00"), cuentaDestino.getSaldo());
 
         verify(cuentaRepositorio, times(1)).save(cuentaOrigen);
         verify(cuentaRepositorio, times(1)).save(cuentaDestino);
