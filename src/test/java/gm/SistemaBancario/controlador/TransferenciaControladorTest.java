@@ -38,9 +38,9 @@ class TransferenciaControladorTest {
         // --- GIVEN (Preparar los datos) ---
         TransferenciaDTO dto = new TransferenciaDTO();
         dto.setCuentaOrigen(1L);
-        dto.setCuentaDestino(2L);
+        dto.setCuentaDestino(11L);
         dto.setMonto(1500.0f);
-        dto.setMotivo(9L);
+        dto.setMotivo(1L);
 
         Transferencia tSimulada = new Transferencia();
         tSimulada.setId(100L);
@@ -48,7 +48,7 @@ class TransferenciaControladorTest {
         tSimulada.setEstado("COMPLETADA");
 
         // Cuando el controlador llame al servicio, devolvemos la transferencia simulada
-        when(transferenciaServicio.realizarTransferencia(1L, 2L, 1500.0f, 9L))
+        when(transferenciaServicio.realizarTransferencia(1L, 11L, 1500.0f, 1L))
                 .thenReturn(tSimulada);
 
         // --- WHEN y THEN (Simular la petición HTTP de React/Postman) ---
