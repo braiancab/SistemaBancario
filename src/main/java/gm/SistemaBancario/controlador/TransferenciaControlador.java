@@ -41,13 +41,14 @@ public class TransferenciaControlador {
 
 
     //Historial de transferencias enviadas
-
+    //No utilizar
     @GetMapping("/enviadas/{idCuenta}")
     public List<Transferencia> obtenerEnviadas(@PathVariable Long idCuenta) {
         return transferenciaServicio.obtenerEnviadas(idCuenta);
     }
 
     //Historial de transferencias recibidas
+    //No utilizar
     @GetMapping("/recibidas/{idCuenta}")
     public List<Transferencia> obtenerRecibidas(@PathVariable Long idCuenta) {
         return transferenciaServicio.obtenerRecibidas(idCuenta);
