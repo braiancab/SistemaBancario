@@ -89,7 +89,33 @@ class OrdenExtraccionServicioImplTest {
         verify(cuentaRepositorio, never()).save(any(Cuenta.class));
         verify(ordenRepositorio, never()).save(any(OrdenExtraccion.class));
     }
+    @Test
+    void crearOrdenExtraccion_DniConFormatoIncorrecto_DeberiaLanzarExcepcion() {
+        // GIVEN: Cuenta 1 con $15.000, extracción de $2.000, DNI inválido (9 dígitos)
+        Cuenta cuentaOrigen = new Cuenta();
+        cuentaOrigen.setIdCuenta(1L);
+        cuentaOrigen.setSaldo(new BigDecimal("15000.00"));
 
+        OrdenExtraccion orden = new OrdenExtraccion();
+        orden.setCuentaOrigen(cuentaOrigen);
+        orden.setMonto_orden(2000.0);
+        orden.setDni("123456789");
+
+        // Usamos lenient() por si la validación frena el flujo en la primera línea
+        lenient().when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
+
+        // WHEN & THEN: Esperamos la excepción
+        RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
+            ordenServicio.crearOrdenExtraccion(orden);
+        });
+
+        // Verificamos el texto exacto que configuramos en tu backend
+        assertEquals("DNI invalido", excepcion.getMessage());
+
+        // Verificamos que no se haya persistido absolutamente nada en la BD
+        verify(cuentaRepositorio, never()).save(any(Cuenta.class));
+        verify(ordenRepositorio, never()).save(any(OrdenExtraccion.class));
+    }
     @Test
     void historialOrdenExtraccion_ClienteConOrdenes_DeberiaRetornarLista() {
         // GIVEN: Cliente 1 con historial

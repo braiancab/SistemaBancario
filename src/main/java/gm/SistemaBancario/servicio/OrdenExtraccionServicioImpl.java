@@ -47,7 +47,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
 
         List<OrdenExtraccion> historial = ordenRepositorio.findByDni(cliente.getDni());
        if (historial.isEmpty()) {
-            throw new RuntimeException("no hay movimientos registrados");
+            throw new RuntimeException("No hay movimientos registrados");
         }
 
         // 2. Extraemos su DNI y buscamos las extracciones
@@ -64,6 +64,11 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
     @Override
     @Transactional
     public OrdenExtraccion crearOrdenExtraccion(OrdenExtraccion orden) {
+
+        if (orden.getDni() == null || orden.getDni().length() != 8) {
+            throw new RuntimeException("DNI invalido");
+        }
+
         Cuenta cuenta = cuentarepositorio.findById(
                 orden.getCuentaOrigen().getIdCuenta()
         ).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
@@ -72,13 +77,15 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
             throw new RuntimeException("Saldo insuficiente");
         }
 
+        orden.setCodigo(UUID.randomUUID().toString().substring(0,6)); //genera código seguridad
+
         BigDecimal retirado = BigDecimal.valueOf(orden.getMonto_orden());
-        cuenta.setSaldo(cuenta.getSaldo().subtract(retirado));
+        cuenta.setSaldo(cuenta.getSaldo().subtract(retirado)); //resta saldo
 
         cuentarepositorio.save(cuenta);
 
         orden.setCuentaOrigen(cuenta);
-        orden.setCodigo(UUID.randomUUID().toString().substring(0,6));
+
         return ordenRepositorio.save(orden);
     }
 
