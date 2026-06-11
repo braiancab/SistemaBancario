@@ -3,6 +3,7 @@ package gm.SistemaBancario.controlador;
 import gm.SistemaBancario.dto.TransferenciaDTO;
 import gm.SistemaBancario.modelo.Transferencia;
 import gm.SistemaBancario.servicio.TransferenciaServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -54,5 +55,25 @@ public class TransferenciaControlador {
         return transferenciaServicio.obtenerRecibidas(idCuenta);
     }
 
+
+    @GetMapping("/estadisticas/cantidad/{idCuenta}")
+    public ResponseEntity<Integer> cantidadTransferencias(
+            @PathVariable Long idCuenta) {
+
+        Integer cantidad =
+                transferenciaServicio.cantidadTransferencias(idCuenta);
+
+        return ResponseEntity.ok(cantidad);
+    }
+
+    @GetMapping("/estadisticas/total/{idCuenta}")
+    public ResponseEntity<Float> totalTransferido(
+            @PathVariable Long idCuenta) {
+
+        Float total =
+                transferenciaServicio.totalTransferido(idCuenta);
+
+        return ResponseEntity.ok(total);
+    }
 
 }

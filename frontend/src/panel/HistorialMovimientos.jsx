@@ -10,6 +10,31 @@ function HistorialMovimientos() {
   const idCuenta = localStorage.getItem("idCuenta");
   const token = localStorage.getItem("token");
   const idCliente = localStorage.getItem("idCliente");
+  const [cantidadTransferencias, setCantidadTransferencias] = useState(0);
+const [totalTransferido, setTotalTransferido] = useState(0);
+
+useEffect(() => {
+    axios
+        .get(`http://localhost:8080/api/transferencias/estadisticas/total/${idCuenta}`)
+        .then((response) => {
+            setTotalTransferido(response.data);
+        });
+}, []);
+
+console.log("idCuenta:", idCuenta);
+
+useEffect(() => {
+    axios
+        .get(`http://localhost:8080/api/transferencias/estadisticas/cantidad/${idCuenta}`)
+        .then((response) => {
+            console.log("Respuesta cantidad:", response.data);
+            setCantidadTransferencias(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}, [idCuenta]);
+
 
   // ==========================================
   // MÉTODOS DEL DIAGRAMA UML
@@ -124,6 +149,7 @@ function HistorialMovimientos() {
     <div className="container mt-4">
       <h2>Mi Historial de Movimientos</h2>
       
+
       <button
         className="btn btn-dark mb-4"
         onClick={descargarPDFHistorial}
@@ -131,6 +157,16 @@ function HistorialMovimientos() {
       >
         Descargar PDF del Historial Completo
       </button>
+
+      <p>
+    Cantidad de transferencias realizadas:
+    {cantidadTransferencias}
+</p>
+<p>
+    Total transferido: $
+    {totalTransferido}
+</p>
+
 
       {movimientos.length === 0 ? (
         <p>No hay movimientos registrados.</p>

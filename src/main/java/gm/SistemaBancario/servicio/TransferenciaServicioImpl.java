@@ -9,6 +9,7 @@ import gm.SistemaBancario.observador.EmailEmisorObservador;
 import gm.SistemaBancario.observador.EmailReceptorObservador;
 import gm.SistemaBancario.repositorio.CuentaRepositorio;
 import gm.SistemaBancario.repositorio.MotivoTransferenciaRepositorio;
+import gm.SistemaBancario.repositorio.TransferenciaProcedimientoAlmacenado;
 import gm.SistemaBancario.repositorio.TransferenciaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,16 +31,21 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
     private final EmailEmisorObservador emailEmisorObserver;
     private final EmailReceptorObservador emailReceptorObserver;
 
+    private final TransferenciaProcedimientoAlmacenado transferenciaProcedimientoAlmacenado;
+
+
     public TransferenciaServicioImpl(CuentaRepositorio cuentaRepositorio,
                                      TransferenciaRepositorio transferenciaRepositorio,
                                      MotivoTransferenciaRepositorio motivoRepositorio,
                                      EmailEmisorObservador emailEmisorObserver,
-                                     EmailReceptorObservador emailReceptorObserver) {
+                                     EmailReceptorObservador emailReceptorObserver,
+                                     TransferenciaProcedimientoAlmacenado transferenciaProcedimientoAlmacenado) {
         this.cuentaRepositorio = cuentaRepositorio;
         this.transferenciaRepositorio = transferenciaRepositorio;
         this.motivoRepositorio = motivoRepositorio;
         this.emailEmisorObserver = emailEmisorObserver;
         this.emailReceptorObserver = emailReceptorObserver;
+        this.transferenciaProcedimientoAlmacenado = transferenciaProcedimientoAlmacenado;
     }
 
 
@@ -71,6 +77,16 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
         return comprobante;
     }
 
+
+    @Override
+    public Integer cantidadTransferencias(Long cuentaId) {
+        return transferenciaRepositorio.cantidadTransferencias(cuentaId);
+    }
+
+    @Override
+    public Float totalTransferido(Long cuentaId) {
+        return transferenciaRepositorio.totalTransferido(cuentaId);
+    }
 
     // TRANSFERENCIA
     @Override
