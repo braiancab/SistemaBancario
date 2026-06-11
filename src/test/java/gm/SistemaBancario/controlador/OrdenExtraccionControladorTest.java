@@ -45,7 +45,7 @@ class OrdenExtraccionControladorTest {
 
         // Preparar lo que va a devolver nuestro servicio falso al procesar la petición
         OrdenExtraccion ordenSimulada = new OrdenExtraccion();
-        // Nota: Asegurate de que el ID se llame id_extraccion o id según tu modelo
+
         ordenSimulada.setId_extraccion(10L);
         ordenSimulada.setMonto_orden(2000.0);
         ordenSimulada.setCodigo("A1B2C3");

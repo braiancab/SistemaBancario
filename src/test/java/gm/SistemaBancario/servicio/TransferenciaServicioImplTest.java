@@ -98,19 +98,19 @@ class TransferenciaServicioImplTest {
         // PASO 1: GIVEN origen con poco saldo
         // ==========================================
         Cuenta cuentaOrigen = new Cuenta();
-        cuentaOrigen.setIdCuenta(1L);
+        cuentaOrigen.setIdCuenta(21L);
         cuentaOrigen.setSaldo(new BigDecimal("100.00"));
 
         Cuenta cuentaDestino = new Cuenta();
-        cuentaDestino.setIdCuenta(2L);
+        cuentaDestino.setIdCuenta(1L);
         cuentaDestino.setSaldo(new BigDecimal("1000.00"));
 
         MotivoTransferencia motivo = new MotivoTransferencia();
-        motivo.setIdMotivo(9L);
+        motivo.setIdMotivo(2L);
 
-        when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaOrigen));
-        when(cuentaRepositorio.findById(2L)).thenReturn(Optional.of(cuentaDestino));
-        when(motivoRepositorio.findById(9L)).thenReturn(Optional.of(motivo));
+        when(cuentaRepositorio.findById(21L)).thenReturn(Optional.of(cuentaOrigen));
+        when(cuentaRepositorio.findById(1L)).thenReturn(Optional.of(cuentaDestino));
+        when(motivoRepositorio.findById(2L)).thenReturn(Optional.of(motivo));
 
         // ==========================================
         // PASO 2 Y 3: WHEN y THEN Se espera el error
@@ -118,7 +118,7 @@ class TransferenciaServicioImplTest {
         Float montoExcesivo = 500.0f;
 
         RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
-            transferenciaServicio.realizarTransferencia(1L, 2L, montoExcesivo, 9L);
+            transferenciaServicio.realizarTransferencia(21L, 1L, montoExcesivo, 2L);
         });
 
         assertEquals("Saldo insuficiente", excepcion.getMessage());
@@ -129,5 +129,49 @@ class TransferenciaServicioImplTest {
         //  Si falla por saldo, NO se debe mandar ningún email
         verify(emailEmisorObserver, never()).actualizar(any());
         verify(emailReceptorObserver, never()).actualizar(any());
+    }
+    // ==========================================
+    // CASO 1: Cuenta con transferencias realizadas
+    // ==========================================
+    @Test
+    void historialCuenta_CuentaConTransferencias_DeberiaRetornarLista() {
+        // GIVEN: Una cuenta con ID 1L que sí tiene movimientos registrados
+        java.util.List<Transferencia> listaFalsa = new java.util.ArrayList<>();
+        listaFalsa.add(new Transferencia()); // Agregamos una transferencia simulada
+
+        when(transferenciaRepositorio.findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(1L, 1L))
+                .thenReturn(listaFalsa);
+
+        // WHEN: Llamamos al método del servicio
+        java.util.List<Transferencia> resultado = transferenciaServicio.historialCuenta(1L);
+
+        // THEN: Verificamos que retorne las transferencias de forma exitosa
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+
+        verify(transferenciaRepositorio, times(1))
+                .findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(1L, 1L);
+    }
+
+    // ==========================================
+    // CASO 2: Cuenta sin transferencias realizadas
+    // ==========================================
+    @Test
+    void historialCuenta_CuentaSinTransferencias_DeberiaLanzarExcepcion() {
+        // GIVEN: Una cuenta con ID 2L que devuelve una lista vacía de la BD
+        when(transferenciaRepositorio.findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(2L, 2L))
+                .thenReturn(new java.util.ArrayList<>());
+
+        // WHEN & THEN: Esperamos que explote con el mensaje exacto de tu tabla
+        RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
+            transferenciaServicio.historialCuenta(2L);
+        });
+
+
+        assertEquals("No hay movimientos registrados", excepcion.getMessage());
+
+        verify(transferenciaRepositorio, times(1))
+                .findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(2L, 2L);
     }
 }

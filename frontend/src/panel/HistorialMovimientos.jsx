@@ -20,11 +20,19 @@ function HistorialMovimientos() {
     const peticionTransferencias = axios.get(
       `http://localhost:8080/api/transferencias/cuenta/${idCuenta}`, 
       { headers: { Authorization: `Bearer ${token}` } }
-    );
+    ).catch((err) => {
+      
+      return { data: [] };
+    });
+
     const peticionExtracciones = axios.get(
       `http://localhost:8080/api/ordenes_extraccion/historial/cliente/${idCliente}`, 
       { headers: { Authorization: `Bearer ${token}` } }
-    );
+    ).catch((err) => {
+      
+      console.warn("Aviso: No se encontraron órdenes de extracción.");
+      return { data: [] };
+    });
     
     // Retorna la promesa combinada
     return Promise.all([peticionTransferencias, peticionExtracciones]);

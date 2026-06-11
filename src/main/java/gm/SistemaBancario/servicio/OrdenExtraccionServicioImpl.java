@@ -45,8 +45,14 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         Cliente cliente = clienteRepositorio.findById(idCliente)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
+        List<OrdenExtraccion> historial = ordenRepositorio.findByDni(cliente.getDni());
+       if (historial.isEmpty()) {
+            throw new RuntimeException("no hay movimientos registrados");
+        }
+
         // 2. Extraemos su DNI y buscamos las extracciones
-        return ordenRepositorio.findByDni(cliente.getDni());
+        return historial;
+
     }
 
     @Override

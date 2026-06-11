@@ -142,8 +142,15 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
     @Override
     @Transactional(readOnly = true)
     public List<Transferencia> historialCuenta(Long idCuenta) {
-        return transferenciaRepositorio
+        List<Transferencia> historial = transferenciaRepositorio
                 .findByCuentaOrigenIdCuentaOrCuentaDestinoIdCuenta(idCuenta, idCuenta);
+
+        if (historial.isEmpty()) {
+            throw new RuntimeException("No hay movimientos registrados");
+        }
+
+
+        return historial;
     }
 
     //historial transferencias enviadas

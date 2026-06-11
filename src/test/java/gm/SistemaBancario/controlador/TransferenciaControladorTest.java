@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest // Levanta el contexto de tu aplicación tal como está ahora
-@AutoConfigureMockMvc //  Nos da el Postman falso (MockMvc) listo para usar
+@SpringBootTest
+@AutoConfigureMockMvc
 class TransferenciaControladorTest {
 
     @Autowired

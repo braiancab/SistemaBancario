@@ -69,8 +69,8 @@ await axios.put(
             <span
               className={
                 cuenta.estadoCuenta?.estado === "activo"
-                  ? "badge bg-success"
-                  : "badge bg-danger"
+                  ? "badge bg-danger"
+                  : "badge bg-success"
               }
             >
               {cuenta.estadoCuenta?.estado}
@@ -97,7 +97,7 @@ await axios.put(
                 : "Ver Saldo"}
             </button>
 
-            {cuenta.estadoCuenta?.estado === "activo" && (
+            {cuenta.estadoCuenta?.estado === "Activa" && (
               <button
                 className="btn btn-danger btn-sm"
                 onClick={() => setMostrarModal(true)}
