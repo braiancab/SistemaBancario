@@ -62,10 +62,9 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
 
         verificarSaldo(orden,cuentaOrigen);
 
-        generarCodigoSeguridad(orden);
+        cuentaOrigen.restarSaldo(orden.getMonto_orden());
 
-        BigDecimal retirado = BigDecimal.valueOf(orden.getMonto_orden());
-        cuentaOrigen.setSaldo(cuentaOrigen.getSaldo().subtract(retirado)); //resta saldo
+        generarCodigoSeguridad(orden);
 
         cuentarepositorio.save(cuentaOrigen);
         orden.setCuentaOrigen(cuentaOrigen);
@@ -80,7 +79,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         }
     }
     private void verificarSaldo(OrdenExtraccion orden,Cuenta cuentaOrigen){
-        if(cuentaOrigen.getSaldo().compareTo(BigDecimal.valueOf(orden.getMonto_orden())) < 0) {
+        if(!cuentaOrigen.tieneSaldoSuficiente(orden.getMonto_orden())) {
             throw new RuntimeException("Saldo insuficiente");
         }
     }
