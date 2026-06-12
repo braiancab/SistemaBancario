@@ -31,12 +31,6 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         this.clienteRepositorio = clienteRepositorio;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<OrdenExtraccion> listarTodas() {
-        return ordenRepositorio.findAll();
-    }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -56,48 +50,42 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<OrdenExtraccion> buscarPorId(Long id) {
-        return ordenRepositorio.findById(id);
-    }
-
-    @Override
     @Transactional
     public OrdenExtraccion crearOrdenExtraccion(OrdenExtraccion orden) {
 
-        if (orden.getDni() == null || orden.getDni().length() != 8) {
-            throw new RuntimeException("DNI invalido");
-        }
 
-        Cuenta cuenta = cuentarepositorio.findById(
+        verificarDni(orden);
+
+        Cuenta cuentaOrigen = cuentarepositorio.findById(
                 orden.getCuentaOrigen().getIdCuenta()
         ).orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
 
-        if(cuenta.getSaldo().compareTo(BigDecimal.valueOf(orden.getMonto_orden())) < 0) {
-            throw new RuntimeException("Saldo insuficiente");
-        }
+        verificarSaldo(orden,cuentaOrigen);
 
-        orden.setCodigo(UUID.randomUUID().toString().substring(0,6)); //genera código seguridad
+        generarCodigoSeguridad(orden);
 
         BigDecimal retirado = BigDecimal.valueOf(orden.getMonto_orden());
-        cuenta.setSaldo(cuenta.getSaldo().subtract(retirado)); //resta saldo
+        cuentaOrigen.setSaldo(cuentaOrigen.getSaldo().subtract(retirado)); //resta saldo
 
-        cuentarepositorio.save(cuenta);
+        cuentarepositorio.save(cuentaOrigen);
 
-        orden.setCuentaOrigen(cuenta);
+        orden.setCuentaOrigen(cuentaOrigen);
 
         return ordenRepositorio.save(orden);
     }
 
-    @Override
-    @Transactional
-    public void eliminar(Long id) {
-        ordenRepositorio.deleteById(id);
-    }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<OrdenExtraccion> buscarPorCodigo(String codigo) {
-        return ordenRepositorio.findByCodigo(codigo);
+    private void verificarDni(OrdenExtraccion orden){
+        if (orden.getDni() == null || orden.getDni().length() != 8) {
+            throw new RuntimeException("DNI invalido");
+        }
+    }
+    private void verificarSaldo(OrdenExtraccion orden,Cuenta cuentaOrigen){
+        if(cuentaOrigen.getSaldo().compareTo(BigDecimal.valueOf(orden.getMonto_orden())) < 0) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+    }
+    private void generarCodigoSeguridad(OrdenExtraccion orden){
+        orden.setCodigo(UUID.randomUUID().toString().substring(0,6));
     }
 }

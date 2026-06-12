@@ -19,37 +19,12 @@ public class OrdenExtraccionControlador {
         this.ordenServicio = ordenServicio;
     }
 
-    @GetMapping
-    public List<OrdenExtraccion> listar() {
-        return ordenServicio.listarTodas();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<OrdenExtraccion> obtenerPorId(@PathVariable Long id) {
-        return ordenServicio.buscarPorId(id)
-                .map(orden -> new ResponseEntity<>(orden, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
 
     @PostMapping
     public OrdenExtraccion crearOrdenExtraccion(@RequestBody OrdenExtraccion orden) {
         return ordenServicio.crearOrdenExtraccion(orden);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> eliminar(@PathVariable Long id) {
-        try {
-            ordenServicio.eliminar(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<List<OrdenExtraccion>> buscarPorCodigo(@RequestParam String codigo) {
-        return new ResponseEntity<>(ordenServicio.buscarPorCodigo(codigo), HttpStatus.OK);
-    }
 
     // mapea el idCliente
     @GetMapping("/historial/cliente/{idCliente}")
