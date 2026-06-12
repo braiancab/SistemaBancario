@@ -11,7 +11,6 @@ public interface CuentaServicio {
 
     List<Cuenta> obtenerCuentasPorCliente(Long idCliente);
 
-    Cuenta buscarPorNumeroCuenta(String numeroCuenta);
+    List<Cuenta> obtenerCuentasDestino(Long idCliente);
 
-     List<Cuenta> obtenerCuentasDestino(Long idCliente);
 }

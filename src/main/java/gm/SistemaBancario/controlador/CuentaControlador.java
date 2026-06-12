@@ -37,13 +37,7 @@ public class CuentaControlador {
     public List<Cuenta> obtenerCuentasPorCliente(@PathVariable Long idCliente) {
         return cuentaServicio.obtenerCuentasPorCliente(idCliente);
     }
-
-    // Buscar por número de cuenta
-
-    @GetMapping("/numero/{numeroCuenta}")
-    public Cuenta buscarCuenta(@PathVariable String numeroCuenta) {
-        return cuentaServicio.buscarPorNumeroCuenta(numeroCuenta);
-    }
+    
 
     @GetMapping("/destino/{idCliente}")
     public List<Cuenta> obtenerCuentasDestino(@PathVariable Long idCliente) {

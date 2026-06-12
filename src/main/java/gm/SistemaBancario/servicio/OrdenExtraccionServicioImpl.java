@@ -68,7 +68,6 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
         cuentaOrigen.setSaldo(cuentaOrigen.getSaldo().subtract(retirado)); //resta saldo
 
         cuentarepositorio.save(cuentaOrigen);
-
         orden.setCuentaOrigen(cuentaOrigen);
 
         return ordenRepositorio.save(orden);

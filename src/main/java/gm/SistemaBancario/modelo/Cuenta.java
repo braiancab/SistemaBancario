@@ -121,4 +121,16 @@ public class Cuenta {
                 '}';
     }
 
+    public boolean tieneSaldoSuficiente(Double monto){
+        return getSaldo().compareTo(BigDecimal.valueOf(monto)) >= 0;
+    }
+
+    public void restarSaldo(Double p_monto){
+        BigDecimal monto = getSaldo().subtract( BigDecimal.valueOf(p_monto));
+        setSaldo(monto);
+    }
+    public void sumarSaldo(Double p_monto){
+        BigDecimal monto = getSaldo().add( BigDecimal.valueOf(p_monto));
+        setSaldo(monto);
+    }
 }

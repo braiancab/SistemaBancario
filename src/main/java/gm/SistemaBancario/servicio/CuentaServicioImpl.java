@@ -100,12 +100,7 @@ public class CuentaServicioImpl implements CuentaServicio {
 
 
     // Buscar cuenta
-    @Override
-    @Transactional(readOnly = true)
-    public Cuenta buscarPorNumeroCuenta(String alias) {
-        return cuentaRepositorio.findByAlias(alias)
-                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
-    }
+
 
     @Override
     public void desactivarCuenta(Long idCuenta, String password) {
