@@ -76,7 +76,7 @@ export const BarraNavegacion = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link fw-medium text-light hover-white" to="/extraccion">Orden extraccion</Link>
+              <Link className="nav-link fw-medium text-light hover-white" to="/extraccion">Orden Extracción</Link>
             </li>
           </ul>
 
