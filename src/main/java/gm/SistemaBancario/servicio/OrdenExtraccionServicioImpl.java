@@ -75,7 +75,7 @@ public class OrdenExtraccionServicioImpl implements OrdenExtraccionServicio {
 
     private void verificarDni(OrdenExtraccion orden){
         if (orden.getDni() == null || orden.getDni().length() != 8) {
-            throw new RuntimeException("DNI invalido");
+            throw new RuntimeException("DNI inválido");
         }
     }
     private void verificarSaldo(OrdenExtraccion orden,Cuenta cuentaOrigen){
