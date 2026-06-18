@@ -32,7 +32,7 @@ export const PieDePagina = () => {
                         <p><Link to="/transferencias" className="text-decoration-none text-white-50 hover-white">Transferir</Link></p>
                         <p><Link to="/movimientos" className="text-decoration-none text-white-50 hover-white">Movimientos</Link></p>
                         <p><Link to="/tarjetas" className="text-decoration-none text-white-50 hover-white">Tarjetas</Link></p>
-                        <p><Link to="/extraccion" className="text-decoration-none text-white-50 hover-white">Orden extraccion</Link></p>
+                        <p><Link to="/extraccion" className="text-decoration-none text-white-50 hover-white">Orden Extracción</Link></p>
                     </div>
 
                     {/* Columna 3: Contacto */}
