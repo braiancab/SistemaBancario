@@ -69,11 +69,27 @@ useEffect(() => {
   };
 
   // Método 3: ordenarHistorial() -> Encargado de la lógica de fechas
+// Método 3: agruparYOrdenar() -> Encargado de la lógica de negocio del arreglo
   const ordenarHistorial = (historialDesordenado) => {
     return historialDesordenado.sort((a, b) => {
-      const fechaA = new Date(a.fecha || a.fechaCreacion || 0);
-      const fechaB = new Date(b.fecha || b.fechaCreacion || 0);
-      return fechaB - fechaA; 
+      
+      // 1. Asignamos un "peso" para agrupar por categoría
+      // Si tiene monto_orden es Extracción (Peso 1), sino es Transferencia (Peso 2)
+      const pesoA = a.monto_orden !== undefined ? 1 : 2;
+      const pesoB = b.monto_orden !== undefined ? 1 : 2;
+
+      // Si son de distinta categoría, los separamos (Las extracciones quedarán arriba)
+      if (pesoA !== pesoB) {
+        return pesoA - pesoB;
+      }
+
+      // 2. Si son de la misma categoría, los ordenamos por ID (de mayor a menor)
+      // Buscamos el ID correcto dependiendo de qué objeto estemos mirando
+      const idA = a.id_extraccion || a.idTransferencia || 0;
+      const idB = b.id_extraccion || b.idTransferencia || 0;
+
+      // Orden descendente: los IDs más grandes (los últimos creados) arriba
+      return idB - idA; 
     });
   };
 

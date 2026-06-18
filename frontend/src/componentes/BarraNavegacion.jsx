@@ -63,6 +63,8 @@ export const BarraNavegacion = () => {
             <li className="nav-item">
               <Link className="nav-link fw-medium text-light hover-white" to="/tarjetas">Tarjetas</Link>
             </li>
+            
+            
             <li className="nav-item">
               <Link
                 className={`nav-link fw-medium ${!tieneCuenta ? "text-white-50 opacity-50" : "text-light hover-white"}`}
@@ -75,8 +77,19 @@ export const BarraNavegacion = () => {
                 Transferir {!tieneCuenta && "🔒"}
               </Link>
             </li>
+
+            
             <li className="nav-item">
-              <Link className="nav-link fw-medium text-light hover-white" to="/extraccion">Orden Extracción</Link>
+              <Link
+                className={`nav-link fw-medium ${!tieneCuenta ? "text-white-50 opacity-50" : "text-light hover-white"}`}
+                to={tieneCuenta ? "/extraccion" : "#"}
+                title={!tieneCuenta ? "Primero debés abrir una cuenta" : ""}
+                onClick={(e) => {
+                  if (!tieneCuenta) e.preventDefault();
+                }}
+              >
+                Orden Extracción {!tieneCuenta && "🔒"}
+              </Link>
             </li>
           </ul>
 
