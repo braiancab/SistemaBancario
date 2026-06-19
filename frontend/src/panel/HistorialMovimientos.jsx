@@ -66,7 +66,7 @@ useEffect(() => {
     });
 
     const peticionExtracciones = axios.get(
-      `http://localhost:8080/api/ordenes_extraccion/historial/cliente/${idCliente}`, 
+      `http://localhost:8080/api/ordenes_extraccion/historial/cuenta/${idCuenta}`, 
       { headers: { Authorization: `Bearer ${token}` } }
     ).catch((err) => {
       

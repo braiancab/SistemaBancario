@@ -5,7 +5,7 @@ import gm.SistemaBancario.servicio.OrdenExtraccionServicio;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import gm.SistemaBancario.repositorio.OrdenExtraccionRepositorio;
 import java.util.List;
 
 @RestController
@@ -14,9 +14,12 @@ import java.util.List;
 public class OrdenExtraccionControlador {
 
     private final OrdenExtraccionServicio ordenServicio;
+    private final OrdenExtraccionRepositorio ordenExtraccionRepositorio;
 
-    public OrdenExtraccionControlador(OrdenExtraccionServicio ordenServicio) {
+    public OrdenExtraccionControlador(OrdenExtraccionServicio ordenServicio,
+    OrdenExtraccionRepositorio ordenExtraccionRepositorio) {
         this.ordenServicio = ordenServicio;
+        this.ordenExtraccionRepositorio = ordenExtraccionRepositorio;
     }
 
 
@@ -35,5 +38,13 @@ public class OrdenExtraccionControlador {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content si no tiene extracciones
         }
         return new ResponseEntity<>(historial, HttpStatus.OK); // 200 OK con la lista
+    }
+
+    @GetMapping("/historial/cuenta/{idCuenta}")
+    public List<OrdenExtraccion> historialPorCuenta(
+            @PathVariable Long idCuenta) {
+
+        return ordenExtraccionRepositorio
+                .findByCuentaOrigen_IdCuenta(idCuenta);
     }
 }
