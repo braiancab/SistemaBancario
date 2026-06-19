@@ -12,6 +12,21 @@ function HistorialMovimientos() {
   const idCliente = localStorage.getItem("idCliente");
   const [cantidadTransferencias, setCantidadTransferencias] = useState(0);
 const [totalTransferido, setTotalTransferido] = useState(0);
+const [filtroMovimiento, setFiltroMovimiento] = useState("TODOS");
+const obtenerTipoMovimiento = (mov) => {
+  // Orden de extracción
+  if (mov.monto_orden !== undefined) {
+    return "EXTRACCION";
+  }
+
+  // Transferencia
+  const esOrigen =
+    parseInt(mov.cuentaOrigen?.idCuenta) === parseInt(idCuenta);
+
+  return esOrigen
+    ? "TRANSFERENCIA_ENVIADA"
+    : "TRANSFERENCIA_RECIBIDA";
+};
 
 useEffect(() => {
     axios
@@ -68,8 +83,8 @@ useEffect(() => {
     return [...resTransferencias.data, ...resExtracciones.data];
   };
 
-  // Método 3: ordenarHistorial() -> Encargado de la lógica de fechas
-// Método 3: agruparYOrdenar() -> Encargado de la lógica de negocio del arreglo
+  // Método 3: ordenarHistorial()
+
   const ordenarHistorial = (historialDesordenado) => {
     return historialDesordenado.sort((a, b) => {
       
@@ -95,7 +110,7 @@ useEffect(() => {
 
   // Método 4: crearProductos() -> El Creador delegando a la Fábrica
   const crearProductos = () => {
-    return movimientos.map((mov, index) => (
+   return movimientosFiltrados.map((mov, index) => (
       <MovimientoFactory
         key={mov.idTransferencia || mov.id_extraccion || index} 
         movimiento={mov}
@@ -161,6 +176,14 @@ useEffect(() => {
     doc.save("historial_movimientos.pdf");
   };
 
+const movimientosFiltrados = movimientos.filter((mov) => {
+  if (filtroMovimiento === "TODOS") return true;
+
+  return obtenerTipoMovimiento(mov) === filtroMovimiento;
+});
+
+
+
   return (
     <div className="container mt-4">
       <h2>Mi Historial de Movimientos</h2>
@@ -182,6 +205,26 @@ useEffect(() => {
     Total transferido: $
     {totalTransferido}
 </p>
+<div className="mb-3">
+  <label className="form-label">
+    Filtrar movimientos:
+  </label>
+
+  <select
+    className="form-select"
+    value={filtroMovimiento}
+    onChange={(e) => setFiltroMovimiento(e.target.value)}
+  >
+    <option value="TODOS">Todos</option>
+    <option value="EXTRACCION">Órdenes de extracción</option>
+    <option value="TRANSFERENCIA_ENVIADA">
+      Transferencias enviadas
+    </option>
+    <option value="TRANSFERENCIA_RECIBIDA">
+      Transferencias recibidas
+    </option>
+  </select>
+</div>
 
 
       {movimientos.length === 0 ? (
