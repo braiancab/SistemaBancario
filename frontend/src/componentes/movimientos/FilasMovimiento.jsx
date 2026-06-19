@@ -72,7 +72,7 @@ export const FilaOrdenExtraccion = ({ movimiento }) => {
 
   // Método 2: Define qué datos específicos debe mostrar
   const mostrarDatos = () => {
-    return `DNI Titular: ${movimiento.dni}`;
+    return `DNI: ${movimiento.dni}`;
   };
 
   const estilos = asignarColor();

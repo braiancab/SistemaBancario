@@ -150,7 +150,7 @@ useEffect(() => {
       if (mov.monto_orden !== undefined) {
         return [
           "Extracción en Cajero",
-          `DNI Titular: ${mov.dni}`,
+          `DNI: ${mov.dni}`,
           `-$${mov.monto_orden}`,
           `Código: ${mov.codigo}`,
           "GENERADA"
