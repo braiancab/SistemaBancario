@@ -4,6 +4,7 @@ import gm.SistemaBancario.dto.TransferenciaComprobanteDTO;
 import gm.SistemaBancario.dto.TransferenciaDTO;
 import gm.SistemaBancario.modelo.Cuenta;
 import gm.SistemaBancario.modelo.MotivoTransferencia;
+import gm.SistemaBancario.modelo.OrdenExtraccion;
 import gm.SistemaBancario.modelo.Transferencia;
 import gm.SistemaBancario.observador.EmailEmisorObservador;
 import gm.SistemaBancario.observador.EmailReceptorObservador;
@@ -111,19 +112,11 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
                 .orElseThrow(() -> new RuntimeException("Motivo no encontrado"));
 
 
-        // 1. Convertir el monto de float a BigDecimal de forma segura
-        BigDecimal montoBI = BigDecimal.valueOf(monto);
 
-        // 2. Comparar saldos: origen.getSaldo() < monto
-        // compareTo devuelve: -1 (menor), 0 (igual), 1 (mayor)
-        if (origen.getSaldo().compareTo(montoBI) < 0) {
-            throw new RuntimeException("Saldo insuficiente");
-        }
+        verificarSaldo(origen, monto);
 
-
-        // 3. Actualizar saldos usando .subtract() y .add()
-        origen.setSaldo(origen.getSaldo().subtract(montoBI));
-        destino.setSaldo(destino.getSaldo().add(montoBI));
+        origen.restarSaldo(monto.doubleValue());
+        destino.sumarSaldo(monto.doubleValue());
 
         cuentaRepositorio.save(origen);
         cuentaRepositorio.save(destino);
@@ -144,6 +137,12 @@ public class TransferenciaServicioImpl implements TransferenciaServicio {
 
         return transferencia;
 
+    }
+
+    private void verificarSaldo( Cuenta cuentaOrigen, Float monto){
+        if(!cuentaOrigen.tieneSaldoSuficiente(monto.doubleValue())) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
     }
 
 
