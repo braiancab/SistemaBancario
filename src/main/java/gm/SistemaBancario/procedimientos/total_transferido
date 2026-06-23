@@ -1,0 +1,15 @@
+DELIMITER $$
+
+CREATE PROCEDURE total_transferido(
+    IN p_cuenta BIGINT
+)
+BEGIN
+    SELECT COALESCE(SUM(monto),0) AS monto_total
+    FROM transferencias
+    WHERE cuenta_origen = p_cuenta;
+END $$
+
+DELIMITER ;
+
+
+CALL total_transferido(1);

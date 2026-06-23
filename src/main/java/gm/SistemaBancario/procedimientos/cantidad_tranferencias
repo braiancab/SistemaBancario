@@ -1,0 +1,14 @@
+DELIMITER $$
+
+CREATE PROCEDURE cantidad_transferencias(
+    IN p_cuenta BIGINT
+)
+BEGIN
+    SELECT COUNT(*) AS total_transferencias
+    FROM transferencias
+    WHERE cuenta_origen = p_cuenta;
+END $$
+
+DELIMITER ;
+
+CALL cantidad_transferencias(1);
